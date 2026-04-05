@@ -1,6 +1,6 @@
 const fs = require("fs")
 
-const baseUrl = "http://localhost:8080"
+const baseUrl = "https://nexus-change.vercel.app"
 
 const currencies = [
 "USD","EUR","GBP","AOA","NGN","ZAR","CAD","AUD","JPY","CHF",
@@ -30,6 +30,10 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
+<url>
+<loc>${baseUrl}/</loc>
+</url>
+
 ${urls}
 
 </urlset>
@@ -37,4 +41,4 @@ ${urls}
 
 fs.writeFileSync("public/sitemap.xml", sitemap)
 
-console.log("Sitemap criado com sucesso!")
+console.log("✅ Sitemap criado com sucesso!")
