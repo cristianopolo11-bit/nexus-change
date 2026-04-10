@@ -12,11 +12,10 @@ import NotFound from "./pages/NotFound";
 // Importação do componente Footer
 import Footer from "./components/Footer"; 
 
-// Importação das novas páginas (Certifique-se de que os arquivos existem em src/pages/)
+// Importação das novas páginas
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
-// Se ainda não criou o About, pode manter esta linha comentada ou criar um arquivo simples
-// import About from "./pages/About";
+import About from "./pages/About";
 
 const queryClient = new QueryClient();
 
@@ -42,7 +41,7 @@ export default function App() {
                 {/* Rotas Legais para o Google AdSense */}
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/terms" element={<Terms />} />
-                {/* <Route path="/about" element={<About />} /> */}
+                <Route path="/about" element={<About />} />
 
                 {/* Página 404 - Deve ser sempre a última */}
                 <Route path="*" element={<NotFound />} />
