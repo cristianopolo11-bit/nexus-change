@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState, useMemo, useEffect } from "react";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, UserPlus, ShieldCheck, TrendingUp, TrendingDown } from "lucide-react";
 
 import CurrencySelect from "@/components/CurrencySelect";
 import ConversionResult from "@/components/ConversionResult";
@@ -13,347 +13,187 @@ import {
 } from "@/lib/currencies";
 
 export default function Index() {
-
   const [amount, setAmount] = useState<string>("1000");
   const [fromCurrency, setFromCurrency] = useState("USD");
   const [toCurrency, setToCurrency] = useState("EUR");
   const [liveRate, setLiveRate] = useState<number | null>(null);
-
-  /* ----------------------------- */
-  /* PARSE AMOUNT                  */
-  /* ----------------------------- */
 
   const numericAmount = useMemo(() => {
     const n = parseFloat(amount);
     return isNaN(n) ? 0 : n;
   }, [amount]);
 
-  /* ----------------------------- */
-  /* CONVERSION RESULT             */
-  /* ----------------------------- */
-
   const result = useMemo(() => {
-
     if (!liveRate) return 0;
-
     return numericAmount * liveRate;
-
   }, [numericAmount, liveRate]);
 
-  /* ----------------------------- */
-  /* LOAD LIVE RATE                */
-  /* ----------------------------- */
-
   useEffect(() => {
-
     async function loadRate() {
-
       try {
-
         const rate = await fetchLiveRate(fromCurrency, toCurrency);
-
         setLiveRate(rate);
-
       } catch (error) {
-
         console.error("Live rate failed");
-
         setLiveRate(null);
-
       }
-
     }
-
     loadRate();
-
   }, [fromCurrency, toCurrency]);
-
-  /* ----------------------------- */
-  /* SMART DECISION                */
-  /* ----------------------------- */
 
   const decision = useMemo(() => {
     return getSmartDecision(fromCurrency, toCurrency);
   }, [fromCurrency, toCurrency]);
 
-  /* ----------------------------- */
-  /* SWAP CURRENCIES               */
-  /* ----------------------------- */
-
   const handleSwap = () => {
-
     setFromCurrency(toCurrency);
     setToCurrency(fromCurrency);
-
   };
 
-  /* ----------------------------- */
-  /* TIME DISPLAY                  */
-  /* ----------------------------- */
-
   const timeString = useMemo(() => {
-
     const now = new Date();
-
     return now.toLocaleTimeString("en-US", {
       hour: "numeric",
       minute: "2-digit",
       hour12: true,
     });
-
   }, []);
-
-  /* ----------------------------- */
-  /* GENERATE SEO PAIRS            */
-  /* ----------------------------- */
 
   const currencyPairs = useMemo(() => {
-
     return generateCurrencyPairs();
-
   }, []);
-
-  /* Mostrar apenas alguns links para não pesar */
 
   const seoLinks = currencyPairs.slice(0, 60);
 
-  /* ----------------------------- */
-  /* POPULAR LINKS                 */
-  /* ----------------------------- */
-
   const popularConversions = [
     { from: "USD", to: "AOA" },
-    { from: "USD", to: "NGN" },
-    { from: "USD", to: "ZAR" },
+    { from: "AOA", to: "USD" },
     { from: "EUR", to: "AOA" },
-    { from: "EUR", to: "NGN" },
-    { from: "GBP", to: "AOA" },
-    { from: "GBP", to: "NGN" }
+    { from: "AOA", to: "EUR" },
+    { from: "BTC", to: "AOA" },
+    { from: "ZAR", to: "AOA" },
+    { from: "GBP", to: "AOA" }
   ];
 
   return (
-
-    <div className="min-h-svh bg-background text-foreground flex items-center justify-center p-4">
-
+    <div className="min-h-svh bg-background text-foreground flex flex-col items-center p-4">
       <div className="w-full max-w-2xl mx-auto space-y-6">
-
+        
         {/* HEADER */}
-
-        <header className="space-y-2 text-center">
-
+        <header className="space-y-2 text-center py-6">
           <div className="flex items-center justify-center gap-2">
-
-            <img
-              src="/icon.png"
-              alt="Nexus Change Icon"
-              className="w-8 h-8"
-            />
-
-            <h1 className="text-xl md:text-2xl font-bold tracking-tight">
-              Nexus Change
-            </h1>
-
+            <img src="/icon.png" alt="Nexus Change Icon" className="w-8 h-8" />
+            <h1 className="text-xl md:text-2xl font-bold tracking-tight">Nexus Change</h1>
           </div>
-
-          <p className="text-sm text-foreground/60">
-            Smart Currency Intelligence
-          </p>
-
-          <p className="text-xs text-foreground/40">
-            Real-time currency conversion for Africa and the world
-          </p>
-
+          <p className="text-sm text-foreground/60">Inteligência Cambial para Angola</p>
         </header>
 
-        {/* MAIN CARD */}
-
-        <div className="bg-card rounded-2xl p-4 md:p-6 shadow-lg space-y-8">
-
-          {/* AMOUNT */}
-
+        {/* MAIN CONVERTER CARD */}
+        <div className="bg-card rounded-3xl p-6 shadow-xl border border-foreground/5 space-y-8">
+          
           <div className="space-y-4">
-
             <div className="space-y-2">
-
-              <label className="text-[10px] font-bold uppercase tracking-widest text-foreground/30">
-
-                Amount
-
-              </label>
-
+              <label className="text-[10px] font-bold uppercase tracking-widest text-foreground/30">Quantia</label>
               <input
                 type="number"
                 inputMode="decimal"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="w-full h-14 bg-foreground/[0.03] rounded-lg px-4 text-xl font-medium tabular-nums focus:outline-none focus:ring-2 focus:ring-primary/40"
+                className="w-full h-14 bg-foreground/[0.03] rounded-xl px-4 text-2xl font-bold tabular-nums focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all"
               />
-
             </div>
-
-            {/* SELECTS */}
 
             <div className="grid grid-cols-[1fr_40px_1fr] items-end gap-2">
-
-              <CurrencySelect
-                label="From"
-                value={fromCurrency}
-                onChange={setFromCurrency}
-              />
-
-              <button
-                onClick={handleSwap}
-                className="h-14 flex items-center justify-center hover:bg-foreground/5 rounded-lg transition"
-              >
-                <ArrowUpDown className="w-4 h-4 text-foreground/30" />
+              <CurrencySelect label="De" value={fromCurrency} onChange={setFromCurrency} />
+              <button onClick={handleSwap} className="h-14 flex items-center justify-center hover:bg-foreground/5 rounded-xl transition">
+                <ArrowUpDown className="w-5 h-5 text-foreground/30" />
               </button>
-
-              <CurrencySelect
-                label="To"
-                value={toCurrency}
-                onChange={setToCurrency}
-              />
-
+              <CurrencySelect label="Para" value={toCurrency} onChange={setToCurrency} />
             </div>
 
-            {/* RATE */}
-
-            <div className="text-xs text-foreground/40 text-center tabular-nums">
-
+            <div className="text-xs font-medium text-foreground/40 text-center py-2 bg-foreground/[0.02] rounded-full">
               1 {fromCurrency} = {liveRate ? liveRate.toFixed(4) : "..."} {toCurrency}
-
             </div>
-
           </div>
 
-          {/* RESULT */}
-
           {numericAmount > 0 && (
-
-            <ConversionResult
-              amount={result}
-              currencyCode={toCurrency}
-            />
-
+            <ConversionResult amount={result} currencyCode={toCurrency} />
           )}
-
-          {/* AI DECISION */}
 
           <SmartDecisionCard decision={decision} />
 
-          {/* SEND MONEY */}
-
-          <div className="space-y-3 text-center">
-
-            <p className="text-xs text-foreground/40 uppercase tracking-widest">
-              Send money with
-            </p>
-
-            <div className="flex gap-2 justify-center flex-wrap">
-
-              <a
-                href="https://wise.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-4 py-2 text-sm rounded-lg bg-foreground/5 hover:bg-foreground/10 transition"
+          {/* NOVOS BOTÕES: BUY & SELL NOW */}
+          <div className="pt-6 border-t border-foreground/5 space-y-4">
+            <p className="text-[10px] font-bold text-center uppercase tracking-widest text-primary/60">Operações Nexus Change</p>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <Link 
+                to="/operation?type=buy" 
+                className="flex flex-col items-center justify-center p-5 rounded-2xl bg-green-500/10 border border-green-500/20 hover:bg-green-500/20 transition group"
               >
-                Wise
-              </a>
+                <TrendingUp className="w-5 h-5 text-green-600 mb-2 group-hover:scale-110 transition-transform" />
+                <span className="text-green-700 font-bold">Buy Now</span>
+                <span className="text-[9px] text-green-600/60 uppercase font-medium">Comprar Moeda</span>
+              </Link>
 
-              <a
-                href="https://westernunion.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-4 py-2 text-sm rounded-lg bg-foreground/5 hover:bg-foreground/10 transition"
+              <Link 
+                to="/operation?type=sell" 
+                className="flex flex-col items-center justify-center p-5 rounded-2xl bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/20 transition group"
               >
-                Western Union
-              </a>
-
-              <a
-                href="https://binance.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-4 py-2 text-sm rounded-lg bg-foreground/5 hover:bg-foreground/10 transition"
-              >
-                Binance
-              </a>
-
+                <TrendingDown className="w-5 h-5 text-blue-600 mb-2 group-hover:scale-110 transition-transform" />
+                <span className="text-blue-700 font-bold">Sell Now</span>
+                <span className="text-[9px] text-blue-600/60 uppercase font-medium">Vender Moeda</span>
+              </Link>
             </div>
 
+            {/* BOTÃO DE REGISTO PROFISSIONAL */}
+            <Link 
+              to="/register" 
+              className="w-full py-4 bg-primary text-primary-foreground rounded-2xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition shadow-lg shadow-primary/20"
+            >
+              <UserPlus size={18} />
+              Criar Conta Nexus
+            </Link>
           </div>
-
         </div>
 
-        {/* POPULAR CONVERSIONS */}
-
-        <div className="space-y-3 text-center">
-
-          <p className="text-xs text-foreground/40 uppercase tracking-widest">
-
-            Popular conversions
-
-          </p>
-
-          <div className="flex flex-wrap justify-center gap-2">
-
-            {popularConversions.map((c, i) => (
-
-              <Link
-                key={i}
-                to={`/convert/${c.from.toLowerCase()}/${c.to.toLowerCase()}`}
-                className="text-xs md:text-sm px-3 py-2 rounded-md bg-foreground/5 hover:bg-foreground/10 transition"
-              >
-                {c.from} → {c.to}
-              </Link>
-
-            ))}
-
+        {/* POPULAR & SEO LINKS */}
+        <div className="space-y-8 pt-6">
+          <div className="space-y-3 text-center">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-foreground/30">Conversões Populares em Angola</p>
+            <div className="flex flex-wrap justify-center gap-2">
+              {popularConversions.map((c, i) => (
+                <Link key={i} to={`/convert/${c.from.toLowerCase()}/${c.to.toLowerCase()}`} className="text-xs px-4 py-2 rounded-xl bg-foreground/5 hover:bg-foreground/10 font-medium transition">
+                  {c.from} → {c.to}
+                </Link>
+              ))}
+            </div>
           </div>
 
-        </div>
-
-        {/* SEO LINKS */}
-
-        <div className="space-y-3 text-center">
-
-          <p className="text-xs text-foreground/40 uppercase tracking-widest">
-
-            More currency pairs
-
-          </p>
+          <div className="space-y-4 text-center border-t border-foreground/5 pt-10">
+            <h2 className="text-lg font-bold">Câmbio e Remessas Internacionais</h2>
+            <p className="text-sm text-foreground/50 leading-relaxed max-w-xl mx-auto">
+              O <strong>Nexus Change</strong> oferece taxas em tempo real para o mercado angolano. 
+              Facilitamos a compra e venda de moedas para quem utiliza plataformas como <strong>Wise</strong>, <strong>Western Union</strong> e <strong>Binance</strong>. 
+              Segurança e rapidez para freelancers e empresas.
+            </p>
+          </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-
             {seoLinks.map((pair, i) => (
-
-              <Link
-                key={i}
-                to={`/convert/${pair.from.toLowerCase()}/${pair.to.toLowerCase()}`}
-                className="text-xs px-2 py-2 rounded-md bg-foreground/5 hover:bg-foreground/10 transition"
-              >
+              <Link key={i} to={`/convert/${pair.from.toLowerCase()}/${pair.to.toLowerCase()}`} className="text-[10px] px-2 py-2 rounded-lg bg-foreground/[0.02] hover:bg-foreground/5 text-foreground/40 transition">
                 {pair.from} → {pair.to}
               </Link>
-
             ))}
-
           </div>
-
         </div>
 
-        {/* FOOTER */}
-
-        <footer className="flex justify-between text-[10px] uppercase text-foreground/20">
-
-          <span>Live Rates: {timeString}</span>
-
-          <span>Source: Market API</span>
-
+        {/* FOOTER INFO */}
+        <footer className="flex justify-between items-center text-[10px] uppercase text-foreground/20 py-8">
+          <div className="flex items-center gap-1"><ShieldCheck size={12}/> Dados de Mercado Seguros</div>
+          <span>Atualizado: {timeString}</span>
         </footer>
-
       </div>
-
     </div>
-
   );
-
 }
