@@ -19,7 +19,7 @@ export default function Index() {
   const [toCurrency, setToCurrency] = useState("AOA"); 
   const [liveRate, setLiveRate] = useState<number | null>(null);
 
-  // CONFIGURAÇÃO DO WHATSAPP
+  // CONFIGURAÇÃO DO WHATSAPP - Garantindo formato internacional limpo
   const WHATSAPP_NUMBER = "244928669514"; 
 
   const NEXUS_RATES: Record<string, number> = {
@@ -65,22 +65,33 @@ export default function Index() {
   };
 
   const handleWhatsAppAction = async (side: "COMPRAR" | "VENDER") => {
-    try {
-      await supabase.from('site_stats').insert([
-        { operation: side, amount: numericAmount, currency: fromCurrency }
-      ]);
-    } catch (e) { /* Silencioso */ }
-
-    const formattedResult = result.toLocaleString(undefined, { minimumFractionDigits: 2 });
+    // 1. Preparar a mensagem primeiro
+    const formattedResult = result.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const message = `Olá! Desejo ${side} ${amount} ${fromCurrency}. O site indicou o total de ${formattedResult} ${toCurrency}. Podemos avançar?`;
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, "_blank");
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+
+    // 2. Tentar gravar no Supabase de forma assíncrona (não bloqueia o utilizador)
+    supabase.from('site_stats').insert([
+      { operation: side, amount: numericAmount, currency: fromCurrency }
+    ]).then(({ error }) => {
+      if (error) console.warn("Erro ao gravar estatística (YAGNI):", error.message);
+    });
+
+    // 3. Redirecionamento robusto (funciona em todos os telemóveis)
+    const newWindow = window.open(whatsappUrl, "_blank");
+    
+    // Se o window.open for bloqueado pelo navegador, redireciona na mesma aba
+    if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+      window.location.href = whatsappUrl;
+    }
   };
 
   return (
     <div className="min-h-screen w-full bg-background text-foreground flex flex-col items-center justify-start p-4 font-sans relative overflow-x-hidden">
       <div className="w-full max-w-2xl mx-auto space-y-6 animate-in fade-in duration-700 flex flex-col items-center">
         
-        {/* HEADER - BOTÃO SOBRE NÓS RECUPERADO */}
+        {/* HEADER */}
         <header className="w-full flex justify-between items-center py-6 px-2">
           <div className="flex items-center gap-2 group cursor-pointer" onClick={() => navigate("/")}>
             <img src="/icon.png" alt="Nexus" className="w-8 h-8 md:w-10 md:h-10 object-contain" />
@@ -93,7 +104,7 @@ export default function Index() {
             >
               Sobre Nós
             </button>
-            <a href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" className="text-[10px] font-black uppercase px-4 py-2 bg-foreground/5 rounded-xl flex items-center gap-2 hover:bg-foreground/10 transition-all border border-foreground/5">
+            <a href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noreferrer" className="text-[10px] font-black uppercase px-4 py-2 bg-foreground/5 rounded-xl flex items-center gap-2 hover:bg-foreground/10 transition-all border border-foreground/5">
               <Phone size={12} /> Suporte
             </a>
           </div>
@@ -121,7 +132,7 @@ export default function Index() {
             </div>
           </div>
 
-          {/* RESULTADOS - LIMPOS (SmartDecisionCard removido daqui) */}
+          {/* RESULTADOS */}
           {numericAmount > 0 && (
             <div className="space-y-4 animate-in zoom-in-95 duration-300">
                <ConversionResult amount={result} currencyCode={toCurrency} />
@@ -146,7 +157,7 @@ export default function Index() {
                 <>
                   <button 
                     onClick={() => handleWhatsAppAction("COMPRAR")} 
-                    className="flex flex-col items-center justify-center p-8 rounded-[2.5rem] bg-green-500/10 border border-green-500/20 hover:bg-green-500/20 transition-all group shadow-sm"
+                    className="flex flex-col items-center justify-center p-8 rounded-[2.5rem] bg-green-500/10 border border-green-500/20 hover:bg-green-500/20 transition-all group shadow-sm active:scale-95"
                   >
                     <TrendingUp className="w-8 h-8 text-green-600 mb-2" />
                     <span className="text-green-700 font-black uppercase italic text-sm">Comprar Agora</span>
@@ -154,7 +165,7 @@ export default function Index() {
 
                   <button 
                     onClick={() => handleWhatsAppAction("VENDER")} 
-                    className="flex flex-col items-center justify-center p-8 rounded-[2.5rem] bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/20 transition-all group shadow-sm"
+                    className="flex flex-col items-center justify-center p-8 rounded-[2.5rem] bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/20 transition-all group shadow-sm active:scale-95"
                   >
                     <TrendingDown className="w-8 h-8 text-blue-600 mb-2" />
                     <span className="text-blue-700 font-black uppercase italic text-sm">Vender Agora</span>
@@ -171,7 +182,7 @@ export default function Index() {
           </div>
         </main>
 
-        {/* FOOTER - LINKS DE NAVEGAÇÃO COMPLEMENTARES */}
+        {/* FOOTER */}
         <footer className="w-full flex flex-col items-center gap-4 py-12">
           <div className="flex gap-6">
             <button onClick={() => navigate("/about")} className="text-[10px] font-black uppercase opacity-30 hover:opacity-100 transition-opacity">Sobre Nós</button>
