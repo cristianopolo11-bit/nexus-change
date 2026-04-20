@@ -1,52 +1,43 @@
-import { ShieldCheck, FileText, Info } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Footer = () => {
-  const currentYear = new Date().getFullYear();
+  const navigate = useNavigate();
+  const year = new Date().getFullYear();
 
   return (
-    <footer className="w-full py-8 mt-20 border-t border-gray-200 bg-white/50 backdrop-blur-sm">
-      <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-          
-          {/* Copyright e Nome */}
-          <div className="text-gray-600 text-sm font-medium">
-            © {currentYear} Nexus Change. Todos os direitos reservados.
-          </div>
-
-          {/* Links Legais - Essencial para o AdSense */}
-          <div className="flex flex-wrap justify-center gap-6">
-            <Link 
-              to="/privacy" 
-              className="flex items-center gap-2 text-sm text-gray-500 hover:text-blue-600 transition-colors"
-            >
-              <ShieldCheck size={16} />
-              Privacidade
-            </Link>
-            
-            <Link 
-              to="/terms" 
-              className="flex items-center gap-2 text-sm text-gray-500 hover:text-blue-600 transition-colors"
-            >
-              <FileText size={16} />
-              Termos de Uso
-            </Link>
-
-            <Link 
-              to="/about" 
-              className="flex items-center gap-2 text-sm text-gray-500 hover:text-blue-600 transition-colors"
-            >
-              <Info size={16} />
-              Sobre Nós
-            </Link>
-          </div>
+    <footer className="w-full bg-card border-t border-foreground/5 py-12 px-4">
+      <div className="max-w-2xl mx-auto flex flex-col items-center gap-6">
+        
+        {/* LINKS DE NAVEGAÇÃO - Recuperando o "Sobre Nós" */}
+        <div className="flex flex-wrap justify-center gap-x-8 gap-y-4">
+          <button 
+            onClick={() => navigate("/about")} 
+            className="text-[11px] font-black uppercase tracking-widest text-foreground/40 hover:text-primary transition-colors"
+          >
+            Sobre Nós
+          </button>
+          <button 
+            onClick={() => navigate("/privacy")} 
+            className="text-[11px] font-black uppercase tracking-widest text-foreground/40 hover:text-primary transition-colors"
+          >
+            Privacidade
+          </button>
+          <button 
+            onClick={() => navigate("/terms")} 
+            className="text-[11px] font-black uppercase tracking-widest text-foreground/40 hover:text-primary transition-colors"
+          >
+            Termos
+          </button>
         </div>
 
-        {/* Pequeno Disclaimer (Bom para SEO e Transparência) */}
-        <div className="mt-8 text-center">
-          <p className="text-[10px] text-gray-400 uppercase tracking-widest leading-relaxed">
-            As taxas de câmbio são apenas para fins informativos. <br />
-            Nexus Change não realiza transações financeiras.
+        {/* LOGO E COPYRIGHT */}
+        <div className="flex flex-col items-center gap-2">
+          <div className="flex items-center gap-2 opacity-20">
+            <img src="/icon.png" alt="Nexus" className="w-5 h-5 grayscale" />
+            <span className="text-[10px] font-black uppercase tracking-[0.2em]">Nexus Change — Angola</span>
+          </div>
+          <p className="text-[9px] font-medium text-foreground/10 uppercase tracking-widest">
+            © {year} Todos os direitos reservados
           </p>
         </div>
       </div>

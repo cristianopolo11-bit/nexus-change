@@ -63,13 +63,9 @@
   }
 
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background text-foreground antialiased w-full min-h-screen;
     font-family: 'Inter', system-ui, sans-serif;
-  }
-}
-
-@layer utilities {
-  .tabular-nums {
-    font-variant-numeric: tabular-nums;
+    margin: 0;
+    padding: 0;
   }
 }

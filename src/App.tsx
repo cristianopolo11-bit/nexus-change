@@ -16,6 +16,9 @@ import Footer from "./components/Footer";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import About from "./pages/About";
+import Register from "./pages/Register";
+import Login from "./pages/Login"; 
+import Orders from "./pages/Orders";
 
 const queryClient = new QueryClient();
 
@@ -35,8 +38,17 @@ export default function App() {
                 {/* Página Principal */}
                 <Route path="/" element={<Index />} />
 
-                {/* Páginas Dinâmicas de Conversão */}
-                <Route path="/convert/:from/:to" element={<Convert />} />
+                {/* Páginas de Acesso */}
+                <Route path="/register" element={<Register />} />
+                <Route path="/login" element={<Login />} />
+
+                {/* Página de Histórico de Ordens */}
+                <Route path="/orders" element={<Orders />} />
+
+                {/* Página de Conversão (AJUSTADO: Adicionado suporte ao parâmetro :side) */}
+                <Route path="/convert" element={<Convert />} />
+                {/* Esta rota abaixo é a mais importante para o seu fluxo atual: */}
+                <Route path="/convert/:from/:to/:side" element={<Convert />} />
 
                 {/* Rotas Legais para o Google AdSense */}
                 <Route path="/privacy" element={<Privacy />} />

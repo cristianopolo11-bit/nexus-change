@@ -1,4 +1,4 @@
-import { FileText, AlertTriangle } from "lucide-react";
+import { FileText, AlertTriangle, ShieldCheck } from "lucide-react";
 
 const Terms = () => {
   return (
@@ -11,40 +11,48 @@ const Terms = () => {
 
         <div className="prose prose-blue text-gray-600 space-y-6">
           <p>
-            Bem-vindo à <strong>Nexus Change</strong>. Ao acessar este website, presumimos que você aceita estes termos e condições na íntegra. Não continue a usar o site se você não concordar com todos os termos e condições estabelecidos nesta página.
+            Bem-vindo à <strong>Nexus Change</strong>. Ao aceder a este website e utilizar o nosso simulador para o mercado de <strong>Angola</strong>, presumimos que aceitas estes termos e condições na íntegra.
           </p>
 
           <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
             <AlertTriangle size={20} className="text-amber-500" />
-            Isenção de Responsabilidade
+            Natureza do Serviço
           </h2>
           <p>
-            As informações fornecidas pela Nexus Change são apenas para fins informativos gerais. Todas as taxas de câmbio são obtidas de APIs públicas e podem sofrer atrasos ou imprecisões devido à volatilidade do mercado financeiro.
+            A Nexus Change é uma plataforma digital de simulação e facilitação de contacto. É importante compreender que:
           </p>
           <ul className="list-disc pl-5 space-y-2">
-            <li><strong>Não somos uma corretora:</strong> A Nexus Change não realiza transações financeiras, transferências de dinheiro ou venda de moedas.</li>
-            <li><strong>Risco do Usuário:</strong> Qualquer decisão financeira tomada com base nas informações deste site é de inteira responsabilidade do usuário. Recomendamos sempre consultar uma instituição bancária oficial antes de realizar operações reais.</li>
+            <li><strong>Simulador de Taxas:</strong> As taxas de câmbio apresentadas são informativas e baseadas nas flutuações do mercado angolano. O valor real da operação será confirmado apenas durante o atendimento direto.</li>
+            <li><strong>Fecho de Negócio:</strong> Este website não processa pagamentos nem transferências bancárias. Todas as transações financeiras são concluídas exclusivamente via WhatsApp ou contacto telefónico com os nossos operadores oficiais.</li>
+            <li><strong>Disponibilidade:</strong> As operações de câmbio estão sujeitas à disponibilidade de stock no momento da negociação em Angola.</li>
           </ul>
 
-          <h2 className="text-xl font-semibold text-gray-800">Licença de Uso</h2>
+          <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+            <ShieldCheck size={20} className="text-green-600" />
+            Responsabilidade do Utilizador
+          </h2>
           <p>
-            Salvo indicação em contrário, a Nexus Change detém os direitos de propriedade intelectual de todo o material no site. Você pode visualizar e imprimir páginas para seu uso pessoal, sujeito às restrições definidas nestes termos.
+            Ao utilizar o nosso serviço em Angola, o utilizador declara que:
           </p>
-          <p className="font-medium text-gray-700">Você não deve:</p>
           <ul className="list-disc pl-5 space-y-2">
-            <li>Republicar material deste site sem atribuição.</li>
-            <li>Vender, alugar ou sublicenciar material do site.</li>
-            <li>Reproduzir, duplicar ou copiar material para fins comerciais escusos.</li>
+            <li>As informações fornecidas para a simulação são verdadeiras.</li>
+            <li>Compreende que as taxas de câmbio podem variar entre o momento da simulação no site e o momento do contacto real.</li>
+            <li>É responsável por verificar se a operação pretendida cumpre com as suas necessidades financeiras pessoais.</li>
           </ul>
 
-          <h2 className="text-xl font-semibold text-gray-800">Links de Terceiros</h2>
+          <h2 className="text-xl font-semibold text-gray-800">Propriedade Intelectual</h2>
           <p>
-            Nosso site pode conter links para sites de terceiros ou serviços que não são de propriedade ou controlados pela Nexus Change. Não temos controle e não assumimos responsabilidade pelo conteúdo ou políticas de privacidade de quaisquer sites de terceiros.
+            Todo o material presente na Nexus Change (logotipo, design e simulador) é propriedade do projeto. O uso indevido da marca Nexus Change para fins comerciais não autorizados em território angolano é estritamente proibido.
           </p>
 
-          <h2 className="text-xl font-semibold text-gray-800">Alterações nos Termos</h2>
+          <h2 className="text-xl font-semibold text-gray-800">Canais Oficiais e Segurança</h2>
           <p>
-            Reservamos o direito de modificar estes termos a qualquer momento. Ao continuar a acessar o nosso site após essas revisões, você concorda em seguir os termos alterados.
+            Para tua segurança, a Nexus Change apenas reconhece negociações feitas através dos nossos números oficiais terminados em <strong>514</strong> e <strong>291</strong>. Não nos responsabilizamos por contactos feitos através de terceiros que se façam passar pela nossa marca.
+          </p>
+
+          <h2 className="text-xl font-semibold text-gray-800">Alterações</h2>
+          <p>
+            Reservamos o direito de atualizar estas regras sempre que necessário para melhor servir o mercado em Angola. O uso continuado do site após alterações implica a aceitação dos novos termos.
           </p>
           
           <div className="pt-6 border-t border-gray-100 text-sm text-gray-400">
