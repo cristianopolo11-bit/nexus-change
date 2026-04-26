@@ -63,6 +63,7 @@ const baseRates: Record<string, number> = {
 /* MARKET TREND SIMULATION          */
 /* -------------------------------- */
 
+
 const trends: Record<string, number> = {
   USD: 0,
   EUR: 0.2,

@@ -37,5 +37,5 @@
     }
     loadRate();
   }, [fromCurrency, toCurrency]);
-
+ 
 // ... (resto do código igual)
