@@ -1,43 +1,87 @@
-/* RESET TOTAL */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  background-color: #0a0a0a;
-  color: white;
+  --nexus-blue: #1a4571;
+  --soft-gray: #f8fafc;
+  --border-light: #e2e8f0;
 }
 
-body {
-  width: 100%;
-  min-height: 100vh;
-  overflow-x: hidden;
-  display: block; /* Mudamos de flex para block para o margin:auto do Tailwind funcionar */
-}
-
+/* Estrutura Centralizada */
 #root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Layout Flexível para os Campos */
+.converter-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 30px;
   width: 100%;
-  min-height: 100vh;
+  margin-top: 20px;
 }
 
-/* Remove as setas do input de número */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-input[type=number] {
-  -moz-appearance: textfield;
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-/* Mantém as tuas animações se precisares */
-@keyframes logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
 }
-.animate-logo {
-  animation: logo-spin infinite 20s linear;
+
+/* Inputs Estilo "Clean" */
+input, select {
+  width: 100%;
+  height: 65px;
+  background-color: var(--soft-gray);
+  border: 2px solid transparent;
+  border-radius: 16px;
+  padding: 0 20px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  transition: all 0.3s ease;
+}
+
+input:focus {
+  background-color: #ffffff;
+  border-color: var(--nexus-blue);
+  box-shadow: 0 10px 25px rgba(26, 69, 113, 0.1);
+  outline: none;
+}
+
+/* Resultado Gigante e Impactante */
+.display-result {
+  font-size: clamp(2.5rem, 8vw, 4rem);
+  font-weight: 900;
+  color: var(--nexus-blue);
+  margin: 40px 0;
+  text-align: center;
+  letter-spacing: -2px;
+}
+
+/* Botão de Ação Principal */
+.btn-primary {
+  width: 100%;
+  max-width: 500px;
+  height: 65px;
+  background-color: var(--nexus-blue);
+  color: white;
+  border-radius: 20px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 15px 30px rgba(26, 69, 113, 0.2);
+  transition: transform 0.2s;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  background-color: #14355a;
 }
