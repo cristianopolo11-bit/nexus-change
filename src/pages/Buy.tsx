@@ -16,20 +16,27 @@ const Buy = () => {
   const [fromCurr, setFromCurr] = useState("USD");
   const [toCurr, setToCurr] = useState("AOA");
   
+  // LINKS PURIFICADOS E ESTÁVEIS (Terceira imagem corrigida contra bloqueios do browser)
   const buyImages = [
-    "https://images.unsplash.com/photo-1611974714658-30d06154625b?q=80&w=1200",
-    "https://images.unsplash.com/photo-1580519542036-c47de6196ba5?q=80&w=1200",
-    "https://images.unsplash.com/photo-1621416848469-8c2009799651?q=80&w=1200"
+    "https://images.unsplash.com/photo-1611974714658-30d06154625b?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1580519542036-c47de6196ba5?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=80"
   ];
   const [imgIndex, setImgIndex] = useState(0);
 
-  // Controle de rotação das imagens de fundo
+  // Sistema de rotação inteligente com preloading real em background contra ecrãs cinzentos
   useEffect(() => {
     const timer = setInterval(() => {
-      setImgIndex((prev) => (prev + 1) % buyImages.length);
-    }, 4000);
+      const nextIndex = (imgIndex + 1) % buyImages.length;
+      const imgCache = new Image();
+      imgCache.src = buyImages[nextIndex];
+      
+      imgCache.onload = () => {
+        setImgIndex(nextIndex);
+      };
+    }, 4500); // Rotação fluida a cada 4.5 segundos
     return () => clearInterval(timer);
-  }, [buyImages.length]);
+  }, [imgIndex, buyImages.length]);
 
   // CONTROLE CRÍTICO: Esconde o balão verde do Tawk.to assim que o componente carrega
   useEffect(() => {
@@ -110,7 +117,7 @@ const Buy = () => {
 
       <div className="max-w-4xl mx-auto px-4 mt-8 space-y-10 text-left">
         <section className="space-y-6">
-          <div className="relative w-full h-64 md:h-80 overflow-hidden rounded-[2.5rem] shadow-xl border border-white">
+          <div className="relative w-full h-64 md:h-80 overflow-hidden rounded-[2.5rem] shadow-xl border border-white bg-[#1a4571]">
             {buyImages.map((img, idx) => (
               <img 
                 key={idx}
@@ -120,7 +127,7 @@ const Buy = () => {
               />
             ))}
             <div className="absolute inset-0 bg-gradient-to-t from-[#1a4571]/80 to-transparent flex items-end p-8">
-              <p className="text-white font-bold text-lg md:text-xl leading-tight">
+              <p className="text-white font-bold text-lg md:text-xl leading-tight z-10">
                 Adquira Dólares, Euros ou Stablecoins com as melhores taxas de Angola.
               </p>
             </div>
@@ -171,7 +178,6 @@ const Buy = () => {
                 </div>
               </div>
 
-              {/* BOTÃO ATUALIZADO: Removeu o formulário intermediário e ativa o chat */}
               <Button 
                 onClick={handleNegociarOperador}
                 className="w-full h-16 bg-[#1a4571] hover:bg-black text-white font-black text-lg rounded-2xl transition-all shadow-xl shadow-blue-900/20 gap-3 group"

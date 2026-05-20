@@ -16,19 +16,34 @@ const Sell = () => {
   const [fromCurr, setFromCurr] = useState("USD");
   const [toCurr, setToCurr] = useState("AOA");
   
+  // NOVA GALERIA DE FOTOS (Exclusiva para a página de Venda)
   const sellImages = [
-    "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?q=80&w=1200",
-    "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?q=80&w=1200",
-    "https://images.unsplash.com/photo-1518458084748-6334538a0c24?q=80&w=1200"
+    // 1. Executivo alegre e confiante num escritório moderno (Cenário diferente da Home)
+    "https://images.unsplash.com/photo-1519085114785-22b64d00874c?q=80&w=800&auto=format&fit=crop",
+    // 2. Casal jovem e feliz celebrando conquistas financeiras no tablet (Diferente da família com crianças)
+    "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&auto=format&fit=crop",
+    // 3. Profissional de finanças sorrindo numa reunião corporativa descontraída
+    "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&auto=format&fit=crop"
   ];
   const [imgIndex, setImgIndex] = useState(0);
 
+  // Sistema de rotação robusto com preloading nativo contra ecrãs cinzentos
   useEffect(() => {
     const timer = setInterval(() => {
-      setImgIndex((prev) => (prev + 1) % sellImages.length);
-    }, 4000);
+      // Calcula o próximo índice
+      const nextIndex = (imgIndex + 1) % sellImages.length;
+      
+      // Cria um objeto de imagem em memória para forçar o download
+      const imgCache = new Image();
+      imgCache.src = sellImages[nextIndex];
+      
+      // Só troca o índice visual quando o browser confirmar que o download terminou
+      imgCache.onload = () => {
+        setImgIndex(nextIndex);
+      };
+    }, 4500); // Troca a cada 4.5 segundos
     return () => clearInterval(timer);
-  }, [sellImages.length]);
+  }, [imgIndex, sellImages.length]);
 
   // CONTROLE CRÍTICO: Garante que o balão verde do Tawk.to fique invisível ao entrar na página
   useEffect(() => {
@@ -45,7 +60,7 @@ const Sell = () => {
   useEffect(() => {
     const updateResult = async () => {
       try {
-        // Passamos 'true' explicitamente para ativar a tabela de venda (ex: 1120 Kz)
+        // Passamos 'true' explicitamente para ativar a tabela de venda
         const rateValue = await convert(1, fromCurr, toCurr, true);
         
         // Fallback de segurança usando a tabela de venda
@@ -72,7 +87,7 @@ const Sell = () => {
     const mensagemFinal = `Olá Nexus Change! Realizei uma simulação de VENDA (Cash-out) no site.\n\n` +
                           `• Moeda que possuo: ${fromCurr}\n` +
                           `• Quantidade a Entregar: ${amount} ${fromCurr}\n` +
-                          `• Total a Receber em Angola: ${result.toLocaleString('pt-PT')} AOA\n` +
+                          `• Total a Receber in Angola: ${result.toLocaleString('pt-PT')} AOA\n` +
                           `• Cotação de Garantia: ${currentRate} AOA\n\n` +
                           `Pretendo avançar com o Cash-out e coordenar as contas com o operador.`;
 
@@ -109,9 +124,9 @@ const Sell = () => {
       </header>
 
       <div className="max-w-4xl mx-auto px-4 mt-8 space-y-10 text-left">
-        {/* CARROSSEL E CONTEÚDO DE VENDA */}
+        {/* CARROSSEL E CONTEÚDO DE VENDA ADAPTADO */}
         <section className="space-y-6">
-          <div className="relative w-full h-64 md:h-80 overflow-hidden rounded-[2.5rem] shadow-xl border border-white">
+          <div className="relative w-full h-64 md:h-80 overflow-hidden rounded-[2.5rem] shadow-xl border border-white bg-[#1a4571]">
             {sellImages.map((img, idx) => (
               <img 
                 key={idx}
@@ -120,9 +135,9 @@ const Sell = () => {
                 alt="Venda de divisas"
               />
             ))}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#1a4571]/80 to-transparent flex items-end p-8">
-              <p className="text-white font-bold text-lg md:text-xl leading-tight">
-                Converta o seu saldo internacional em Kwanza com liquidez imediata via Multicaixa Express.
+            <div className="absolute inset-0 bg-gradient-to-t from-[#1a4571]/90 to-transparent flex items-end p-8">
+              <p className="text-white font-bold text-lg md:text-xl leading-tight z-10">
+                Converta o seu saldo internacional em Kwanza com liquidez imediata.
               </p>
             </div>
           </div>

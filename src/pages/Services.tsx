@@ -74,14 +74,15 @@ const Services = () => {
     },
     {
       title: "Pagamentos Internacionais",
-      description: "Pagamos as suas faturas, subscrições de plataformas ou compras online em qualquer parte do mundo de forma ágil através do operador.",
+      description: "Pagamos as suas faturas, subscrições de plataformas ou compras online in qualquer parte do mundo de forma ágil através do operador.",
       icon: <Globe className="w-8 h-8 text-purple-500" />,
       actionType: "chat",
       color: "hover:border-purple-500"
     },
     {
-      title: "Agentes Físicos (Cabinda)",
-      description: "Em breve: Pontos de troca e atendimento físicos em lojas parceiras por toda a província de Cabinda para clientes analógicos.",
+      // ESTRATÉGIA NACIONAL: "Cabinda" removido do título e descrição expandida para gerar expectativa geral
+      title: "Agentes Físicos",
+      description: "Em breve: Pontos de troca e atendimento físicos em lojas parceiras estrategicamente localizadas por todo o território nacional.",
       icon: <Store className="w-8 h-8 text-orange-500" />,
       actionType: "soon",
       path: "#",
@@ -115,6 +116,7 @@ const Services = () => {
             <Card 
               key={index}
               onClick={() => handleCardClick(service)}
+              data-aos="fade-up" // Efeito premium de rolagem injetado nos cards de serviços
               className={`p-8 bg-white border-2 border-transparent transition-all duration-300 cursor-pointer group shadow-xl rounded-[2rem] flex flex-col justify-between ${service.color}`}
             >
               <div className="flex flex-col h-full justify-between">
@@ -152,8 +154,8 @@ const Services = () => {
           ))}
         </div>
 
-        {/* Footer da seção de serviços centralizado e sem botão */}
-        <div className="mt-16 bg-[#1a4571] rounded-[2.5rem] p-10 text-white text-center">
+        {/* Banner inferior com animação suave */}
+        <div data-aos="fade-up" className="mt-16 bg-[#1a4571] rounded-[2.5rem] p-10 text-white text-center">
           <div className="space-y-4">
             <div className="flex items-center justify-center gap-2">
               <ShieldCheck className="text-emerald-400" />

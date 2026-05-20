@@ -41,81 +41,27 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
 
-    /* Hero Section - Ciclo de Luanda */
-    #hero-dynamic {
-      width: 100%;
-      height: 45vh; 
-      background-size: cover;
-      background-position: center;
-      position: relative;
-      transition: background-image 1.5s ease-in-out;
-    }
-
-    /* Área do React - Ajustada para o Design Rawbank */
+    /* Área do React - O HeroSlider agora renderiza nativamente aqui dentro */
     #root { 
       flex: 1;
       width: 100%;
       max-width: 1200px; 
-      margin: -60px auto 0; /* Sobreposição elegante sobre a imagem */
+      margin: 0 auto; /* Ajustado para o alinhamento do novo Hero do React */
       padding: 0 20px 50px;
       z-index: 20;
       background: transparent !important;
     }
-
-    .footer-links {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-      padding: 40px 20px;
-      border-top: 1px solid #f0f0f0;
-      background: white;
-    }
-
-    .footer-btn {
-      color: #666;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.85rem;
-      transition: color 0.3s;
-    }
-    .footer-btn:hover { color: var(--nexus-blue); }
   </style>
 </head>
 <body>
-  
-
-  <section id="hero-dynamic"></section>
 
   <div id="root"></div>
-
-  <div class="footer-links">
-    <a href="/about" class="footer-btn">SOBRE NÓS</a>
-    <a href="/faq" class="footer-btn">FAQ</a>
-    <a href="/terms" class="footer-btn">TERMOS</a>
-    <a href="/privacy" class="footer-btn">PRIVACIDADE</a>
-  </div>
-
-  <script>
-    function aplicarTema() {
-        const hora = new Date().getHours();
-        const hero = document.getElementById('hero-dynamic');
-        // Luanda Day Cycle
-        if (hora >= 6 && hora < 18) {
-            hero.style.backgroundImage = "url('watermarked_img_5308452742576392281.png')";
-        } else {
-            hero.style.backgroundImage = "url('watermarked_img_10250212186873065357.png')";
-        }
-    }
-    aplicarTema(); // CORRIGIDO: Nome correto da função sem dar erro de ecrã branco
-  </script>
 
   <script type="module" src="/src/main.tsx"></script>
 
   <script type="text/javascript">
     var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
     
-    // ORDEM DE OCULTAÇÃO: O script carrega mas esconde o balão flutuante verde automaticamente
     Tawk_API.onLoad = function(){
         Tawk_API.hideWidget();
     };

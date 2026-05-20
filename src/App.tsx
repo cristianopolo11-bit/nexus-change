@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"; // IMPORTADO O USEEFFECT
+import React, { useEffect } from "react"; // CORRIGIDO: Adicionado o "i" no import
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
@@ -15,7 +15,7 @@ import Index from "./pages/Index";
 import Buy from "./pages/Buy"; 
 import Sell from "./pages/Sell"; 
 import Services from "./pages/Services"; 
-import Support from "./pages/Support"; // 1. IMPORTAÇÃO DA PÁGINA DE SUPORTE
+import Support from "./pages/Support"; 
 import Convert from "./pages/Convert";
 import NotFound from "./pages/NotFound";
 
@@ -28,6 +28,7 @@ import Orders from "./pages/Orders";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import About from "./pages/About";
+import FAQ from "./pages/FAQ"; // IMPORTADO O NOVO COMPONENTE DE FAQ
 
 const queryClient = new QueryClient();
 
@@ -61,7 +62,7 @@ export default function App() {
                 <Route path="/buy" element={<Buy />} />
                 <Route path="/sell" element={<Sell />} /> 
                 <Route path="/services" element={<Services />} /> 
-                <Route path="/support" element={<Support />} /> {/* 2. ROTA DE SUPORTE ADICIONADA */}
+                <Route path="/support" element={<Support />} /> 
 
                 {/* Fluxo de Checkout dinâmico */}
                 <Route path="/convert/:from/:to/:type" element={<Convert />} />
@@ -73,6 +74,7 @@ export default function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/about" element={<About />} />
+                <Route path="/faq" element={<FAQ />} /> {/* ROTA DO FAQ INTEGRADA COM SUCESSO */}
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/terms" element={<Terms />} />
 

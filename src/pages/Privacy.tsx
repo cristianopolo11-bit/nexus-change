@@ -1,50 +1,100 @@
-import { ShieldCheck, Globe } from "lucide-react";
+import React from "react";
+import { ShieldCheck, Globe, Lock, EyeOff, MessageSquare } from "lucide-react";
 
 const Privacy = () => {
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-        <div className="flex items-center gap-3 mb-6 text-blue-600">
-          <ShieldCheck size={32} />
-          <h1 className="text-3xl font-bold text-gray-900">Privacidade e Segurança</h1>
-        </div>
+    <div className="min-h-screen bg-slate-50 pb-20 text-left">
+      {/* HEADER CORPORATIVO UNIFICADO */}
+      <header className="bg-[#1a4571] py-16 px-6 text-center text-white">
+        <h1 className="text-4xl font-black uppercase italic tracking-tighter mb-4">
+          Política de Privacidade
+        </h1>
+        <p className="text-blue-100 max-w-2xl mx-auto font-medium text-sm">
+          Saiba como protegemos os seus dados e garantimos o sigilo absoluto em cada transação digital.
+        </p>
+      </header>
 
-        <div className="prose prose-blue text-gray-600 space-y-6">
-          <p>
-            Na <strong>Nexus Change</strong>, operamos com o compromisso de servir todo o território de <strong>Angola</strong> com transparência e segurança. A privacidade dos nossos utilizadores é o pilar fundamental do nosso serviço de câmbio.
+      <div className="max-w-4xl mx-auto px-6 -mt-10">
+        {/* BLOCO CENTRAL DE PRIVACIDADE COM ANIMAÇÃO */}
+        <section 
+          data-aos="fade-up"
+          className="bg-white p-8 md:p-12 border-none shadow-[0_20px_50px_rgba(0,0,0,0.08)] bg-white rounded-[2rem] space-y-8 text-slate-600 font-medium text-sm leading-relaxed"
+        >
+          <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
+            <ShieldCheck size={36} className="text-[#1a4571]" />
+            <h2 className="text-2xl font-black text-[#1a4571] uppercase italic tracking-tight">
+              Compromisso de Sigilo
+            </h2>
+          </div>
+
+          <p className="text-sm md:text-base">
+            Na <strong>Nexus Change</strong>, operamos sob o compromisso de servir o mercado financeiro de <strong>Angola</strong> com transparência, integridade e máxima segurança. A privacidade dos nossos utilizadores e a proteção das suas intenções cambiais são os pilares fundamentais do nosso serviço.
           </p>
 
-          <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
-            <Globe size={20} className="text-blue-500" /> Operação Nacional (Angola)
-          </h2>
-          <p>
-            O nosso serviço é desenhado para angolanos que procuram agilidade. Não solicitamos nem armazenamos dados bancários sensíveis ou senhas neste website. O nosso papel é fornecer cotações atualizadas para o mercado angolano e facilitar o contacto direto.
-          </p>
+          {/* Diretriz 1 */}
+          <div className="space-y-2">
+            <h3 className="text-lg font-black text-[#1a4571] uppercase italic flex items-center gap-2">
+              <Globe size={18} /> Operação Financeira Descentralizada
+            </h3>
+            <p>
+              O nosso ecossistema foi projetado para investidores e clientes que procuram agilidade. **Não solicitamos, não processamos e não armazenamos passwords de cartões ou dados bancários sensíveis** neste website. O papel da plataforma é fornecer cotações dinâmicas e estabelecer canais de comunicação diretos e encriptados.
+            </p>
+          </div>
 
-          <h2 className="text-xl font-semibold text-gray-800">Negociação Segura no WhatsApp</h2>
-          <p>
-            Como é prática comum no mercado digital em Angola, a negociação final é realizada via WhatsApp. Todas as informações partilhadas durante a conversa são protegidas pela criptografia da plataforma e utilizadas estritamente para a finalidade da operação de câmbio.
-          </p>
+          {/* Diretriz 2 */}
+          <div className="space-y-2">
+            <h3 className="text-lg font-black text-[#1a4571] uppercase italic flex items-center gap-2">
+              <Lock size={18} /> Negociação Protegida e Criptografada
+            </h3>
+            <p>
+              Em conformidade com os mais altos padrões digitais, a validação e o fecho de qualquer operação cambial ocorrem num ambiente privado. Todas as informações, dados de liquidação (como chaves de carteiras digitais ou IBAN) e comprovativos partilhados no nosso chat privado são encriptados e destruídos ou arquivados de forma estritamente segura após o término e liquidação da ordem.
+            </p>
+          </div>
 
-          <h2 className="text-xl font-semibold text-gray-800">Proteção de Dados em Angola</h2>
-          <p>
-            Respeitamos a privacidade dos nossos clientes em todas as províncias. Os cookies utilizados neste portal servem apenas para garantir que as tuas preferências de moeda (como o Kwanza - AOA) sejam mantidas durante a navegação.
-          </p>
+          {/* Diretriz 3 */}
+          <div className="space-y-2">
+            <h3 className="text-lg font-black text-[#1a4571] uppercase italic flex items-center gap-2">
+              <EyeOff size={18} /> Retenção Mínima de Dados
+            </h3>
+            <p>
+              Respeitamos a privacidade do cliente em qualquer localidade. Os cookies utilizados neste portal servem unicamente para fins analíticos anónimos e para garantir que as tuas preferências de moedas e do montante em Kwanza (AOA) sejam mantidas durante a simulação, sem rastreio de identidade.
+            </p>
+          </div>
 
-          <h2 className="text-xl font-semibold text-gray-800">Canais Oficiais</h2>
-          <p>
-            Para garantir a tua segurança, certifica-te de que estás a comunicar com os nossos números oficiais angolanos (terminados em <strong>514</strong> e <strong>291</strong>). A Nexus Change nunca solicita dados de acesso por telefone.
-          </p>
+          {/* Diretriz 4 */}
+          <div className="space-y-2">
+            <h3 className="text-lg font-black text-[#1a4571] uppercase italic flex items-center gap-2">
+              <MessageSquare size={18} /> Verificação de Canais Oficiais
+            </h3>
+            <p>
+              Para a sua total segurança, realize as suas transações exclusivamente através do assistente de chat nativo presente na nossa plataforma oficial ou através dos links gerados diretamente por este domínio. A Nexus Change **nunca solicita dados de acesso, códigos de autenticação ou transferências imediatas através de chamadas telefónicas**.
+            </p>
+          </div>
 
-          <h2 className="text-xl font-semibold text-gray-800">Consentimento</h2>
-          <p>
-            Ao utilizar o nosso portal para simular taxas de câmbio em Angola, declaras estar de acordo com as nossas práticas de segurança e sigilo profissional.
-          </p>
-          
-          <div className="pt-6 border-t border-gray-100 text-sm text-gray-400">
+          {/* Consentimento */}
+          <div className="pt-4 border-t border-slate-100">
+            <h3 className="text-sm font-black text-[#1a4571] uppercase tracking-wider mb-1">Consentimento Informado</h3>
+            <p className="text-xs text-slate-500">
+              Ao utilizar o portal da Nexus Change para simular cotações cambiais e interagir com os nossos operadores, o utilizador declara estar ciente e de acordo com as nossas diretrizes de segurança, sigilo bancário e tratamento restrito de dados operacionais.
+            </p>
+          </div>
+
+          {/* Data de Atualização Dinâmica */}
+          <div className="pt-2 text-[11px] text-slate-400 font-bold uppercase tracking-widest text-right">
             Última atualização: {new Date().toLocaleDateString('pt-PT')}
           </div>
+        </section>
+
+        {/* RODAPÉ ALINHADO */}
+        <div data-aos="fade-up" className="mt-12 text-center space-y-1">
+          <p className="text-slate-500 text-sm font-black italic uppercase tracking-tight">
+            Nexus Change — Segurança Bancária e Inovação
+          </p>
+          <p className="text-slate-400 text-[10px] uppercase tracking-widest font-black">
+            Proteção e Confidencialidade Garantidas
+          </p>
         </div>
+
       </div>
     </div>
   );
