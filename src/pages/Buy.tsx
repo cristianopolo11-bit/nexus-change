@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { convert, getExchangeRate } from "@/lib/currencies";
 import { ArrowLeft, MessageSquare, ShieldCheck, Wallet } from "lucide-react";
+import { ChatNexusModal } from "@/components/ChatNexusModal"; 
 
 const Buy = () => {
   const navigate = useNavigate();
@@ -16,7 +17,8 @@ const Buy = () => {
   const [fromCurr, setFromCurr] = useState("USD");
   const [toCurr, setToCurr] = useState("AOA");
   
-  // LINKS PURIFICADOS E ESTÁVEIS (Terceira imagem corrigida contra bloqueios do browser)
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
   const buyImages = [
     "https://images.unsplash.com/photo-1611974714658-30d06154625b?auto=format&fit=crop&w=800&q=80",
     "https://images.unsplash.com/photo-1580519542036-c47de6196ba5?auto=format&fit=crop&w=800&q=80",
@@ -24,37 +26,22 @@ const Buy = () => {
   ];
   const [imgIndex, setImgIndex] = useState(0);
 
-  // Sistema de rotação inteligente com preloading real em background contra ecrãs cinzentos
   useEffect(() => {
     const timer = setInterval(() => {
       const nextIndex = (imgIndex + 1) % buyImages.length;
       const imgCache = new Image();
       imgCache.src = buyImages[nextIndex];
-      
       imgCache.onload = () => {
         setImgIndex(nextIndex);
       };
-    }, 4500); // Rotação fluida a cada 4.5 segundos
+    }, 4500);
     return () => clearInterval(timer);
   }, [imgIndex, buyImages.length]);
 
-  // CONTROLE CRÍTICO: Esconde o balão verde do Tawk.to assim que o componente carrega
-  useEffect(() => {
-    if (typeof window !== "undefined" && (window as any).Tawk_API) {
-      try {
-        (window as any).Tawk_API.hideWidget();
-      } catch (e) {
-        console.error("Erro ao esconder widget:", e);
-      }
-    }
-  }, []);
-
-  // Lógica de cálculo sincronizada com as Taxas de COMPRA (buyRates)
   useEffect(() => {
     const updateResult = async () => {
       try {
         const rateValue = await convert(1, fromCurr, toCurr, false);
-        
         const finalRate = rateValue && rateValue > 0 
           ? rateValue 
           : getExchangeRate(fromCurr, toCurr, false);
@@ -71,43 +58,14 @@ const Buy = () => {
     updateResult();
   }, [amount, fromCurr, toCurr]);
 
-  // FUNÇÃO DO BOTÃO: Remove o formulário antigo e chama o operador com dados embutidos
+  // FIX: Nome da função corrigido para bater certo com o onClick do teu botão!
   const handleNegociarOperador = (e: React.MouseEvent) => {
     e.preventDefault();
-
-    const mensagemFinal = `Olá Nexus Change! Realizei uma simulação de COMPRA de divisas no site.\n\n` +
-                          `• Moeda Pretendida: ${fromCurr}\n` +
-                          `• Quantidade Solicitada: ${amount} ${fromCurr}\n` +
-                          `• Total a Pagar: ${result.toLocaleString('pt-PT')} AOA\n` +
-                          `• Taxa Aplicada: ${currentRate} AOA\n\n` +
-                          `Gostaria de fechar a operação diretamente aqui com o operador de serviço.`;
-
-    if (typeof window !== "undefined" && (window as any).Tawk_API) {
-      const tawk = (window as any).Tawk_API;
-      
-      // 1. Torna o chat visível apenas neste clique específico
-      tawk.showWidget();
-      
-      // 2. Maximiza a janela na cara do cliente
-      tawk.maximize();
-      
-      // 3. Injeta a simulação do cliente de forma limpa no painel do operador
-      if (tawk.setAttributes) {
-        tawk.setAttributes({
-          'Simulacao-Tipo': 'COMPRA',
-          'Simulacao-Moeda': fromCurr,
-          'Simulacao-Montante': `${amount} ${fromCurr}`,
-          'Simulacao-Total-Kz': `${result.toLocaleString('pt-PT')} AOA`
-        });
-      }
-    } else {
-      // Plano B profissional por e-mail caso a internet do cliente bloqueie scripts
-      window.location.href = `mailto:nexuschangesuporte@gmail.com?subject=Ordem de Compra Nexus&body=${encodeURIComponent(mensagemFinal)}`;
-    }
+    setIsChatOpen(true);
   };
 
   return (
-    <div className="min-h-screen w-full bg-slate-50 pb-20 animate-in fade-in duration-700">
+    <div className="min-h-screen w-full bg-slate-50 pb-20 animate-in fade-in duration-700 font-sans text-left">
       <header className="p-6 flex items-center gap-4 bg-white border-b sticky top-0 z-50">
         <Button variant="ghost" size="icon" onClick={() => navigate("/")} className="rounded-full">
           <ArrowLeft size={20} className="text-[#1a4571]" />
@@ -205,6 +163,12 @@ const Buy = () => {
           </div>
         </Card>
       </div>
+
+      <ChatNexusModal 
+        isOpen={isChatOpen} 
+        onClose={() => setIsChatOpen(false)} 
+        contexto={`Compra de ${amount} ${fromCurr} por ${result.toLocaleString('pt-PT')} AOA`} 
+      />
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
   ShoppingCart, 
@@ -11,41 +11,14 @@ import {
   MessageSquare
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { ChatNexusModal } from "@/components/ChatNexusModal"; // INJETADO: O nosso novo modal privado
 
 const Services = () => {
   const navigate = useNavigate();
 
-  // CONTROLE CRÍTICO: Garante que o balão verde do Tawk.to fique invisível ao entrar na página
-  useEffect(() => {
-    if (typeof window !== "undefined" && (window as any).Tawk_API) {
-      try {
-        (window as any).Tawk_API.hideWidget();
-      } catch (e) {
-        console.error("Erro ao esconder widget nos serviços:", e);
-      }
-    }
-  }, []);
-
-  // FUNÇÃO DE DISPARO DIRECTO: Para os serviços que fecham direto no chat (Carteiras e Pagamentos)
-  const handleAbrirChatServico = (tituloServico: string) => {
-    const mensagemFinal = `Olá Nexus Change! Estava a navegar na página de Serviços e preciso de suporte para o seguinte serviço:\n\n` +
-                          `• Serviço Escolhido: ${tituloServico}\n\n` +
-                          `Gostaria de coordenar os detalhes com o operador em serviço.`;
-
-    if (typeof window !== "undefined" && (window as any).Tawk_API) {
-      const tawk = (window as any).Tawk_API;
-      tawk.showWidget();
-      tawk.maximize();
-      if (tawk.setAttributes) {
-        tawk.setAttributes({
-          'Simulacao-Tipo': 'SOLICITACAO_SERVICO',
-          'Servico-Nome': tituloServico
-        });
-      }
-    } else {
-      window.location.href = `mailto:nexuschangesuporte@gmail.com?subject=Serviço Nexus - ${tituloServico}&body=${encodeURIComponent(mensagemFinal)}`;
-    }
-  };
+  // ESTADOS DO CHAT: Controlam o comportamento da mesa de negociação privada
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [chatContext, setChatContext] = useState("");
 
   const services = [
     {
@@ -74,13 +47,12 @@ const Services = () => {
     },
     {
       title: "Pagamentos Internacionais",
-      description: "Pagamos as suas faturas, subscrições de plataformas ou compras online in qualquer parte do mundo de forma ágil através do operador.",
+      description: "Pagamos as suas faturas, subscrições de plataformas ou compras online em qualquer parte do mundo de forma ágil através do operador.",
       icon: <Globe className="w-8 h-8 text-purple-500" />,
       actionType: "chat",
       color: "hover:border-purple-500"
     },
     {
-      // ESTRATÉGIA NACIONAL: "Cabinda" removido do título e descrição expandida para gerar expectativa geral
       title: "Agentes Físicos",
       description: "Em breve: Pontos de troca e atendimento físicos em lojas parceiras estrategicamente localizadas por todo o território nacional.",
       icon: <Store className="w-8 h-8 text-orange-500" />,
@@ -91,11 +63,13 @@ const Services = () => {
     }
   ];
 
+  // GESTÃO DE CLIQUE INTELIGENTE: Roteia ou abre o Modal Supabase Privado
   const handleCardClick = (service: typeof services[0]) => {
     if (service.actionType === "route" && service.path) {
       navigate(service.path);
     } else if (service.actionType === "chat") {
-      handleAbrirChatServico(service.title);
+      setChatContext(service.title);
+      setIsChatOpen(true);
     }
   };
 
@@ -116,7 +90,7 @@ const Services = () => {
             <Card 
               key={index}
               onClick={() => handleCardClick(service)}
-              data-aos="fade-up" // Efeito premium de rolagem injetado nos cards de serviços
+              data-aos="fade-up"
               className={`p-8 bg-white border-2 border-transparent transition-all duration-300 cursor-pointer group shadow-xl rounded-[2rem] flex flex-col justify-between ${service.color}`}
             >
               <div className="flex flex-col h-full justify-between">
@@ -154,7 +128,7 @@ const Services = () => {
           ))}
         </div>
 
-        {/* Banner inferior com animação suave */}
+        {/* Banner inferior */}
         <div data-aos="fade-up" className="mt-16 bg-[#1a4571] rounded-[2.5rem] p-10 text-white text-center">
           <div className="space-y-4">
             <div className="flex items-center justify-center gap-2">
@@ -168,6 +142,13 @@ const Services = () => {
           </div>
         </div>
       </div>
+
+      {/* COMPONENTE DO CHAT PRIVADO: Fica ativo aguardando os disparos dos cards */}
+      <ChatNexusModal 
+        isOpen={isChatOpen} 
+        onClose={() => setIsChatOpen(false)} 
+        contexto={chatContext} 
+      />
     </div>
   );
 };

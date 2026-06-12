@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"; // CORRIGIDO: Adicionado o "i" no import
+import React, { useEffect } from "react"; 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
@@ -28,7 +28,10 @@ import Orders from "./pages/Orders";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import About from "./pages/About";
-import FAQ from "./pages/FAQ"; // IMPORTADO O NOVO COMPONENTE DE FAQ
+import FAQ from "./pages/FAQ";
+
+// NOVO: Importação do Painel Administrativo do Chat Secreto
+import AdminChat from "./pages/AdminChat";
 
 const queryClient = new QueryClient();
 
@@ -74,9 +77,12 @@ export default function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/about" element={<About />} />
-                <Route path="/faq" element={<FAQ />} /> {/* ROTA DO FAQ INTEGRADA COM SUCESSO */}
+                <Route path="/faq" element={<FAQ />} />
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/terms" element={<Terms />} />
+
+                {/* NOVO: Rota Secreta da Mesa de Negociação para os Operadores */}
+                <Route path="/nexus-admin-chat" element={<AdminChat />} />
 
                 {/* 404 */}
                 <Route path="*" element={<NotFound />} />

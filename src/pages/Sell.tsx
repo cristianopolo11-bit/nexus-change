@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { convert, getExchangeRate } from "@/lib/currencies";
 import { ArrowLeft, MessageSquare, HandCoins, ShieldCheck } from "lucide-react";
+import { ChatNexusModal } from "@/components/ChatNexusModal"; // INJETADO: O nosso modal do Supabase
 
 const Sell = () => {
   const navigate = useNavigate();
@@ -16,54 +17,35 @@ const Sell = () => {
   const [fromCurr, setFromCurr] = useState("USD");
   const [toCurr, setToCurr] = useState("AOA");
   
-  // NOVA GALERIA DE FOTOS (Exclusiva para a página de Venda)
+  // ESTADOS DO CHAT PRIVADO
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
+  // GALERIA DE FOTOS
   const sellImages = [
-    // 1. Executivo alegre e confiante num escritório moderno (Cenário diferente da Home)
     "https://images.unsplash.com/photo-1519085114785-22b64d00874c?q=80&w=800&auto=format&fit=crop",
-    // 2. Casal jovem e feliz celebrando conquistas financeiras no tablet (Diferente da família com crianças)
     "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&auto=format&fit=crop",
-    // 3. Profissional de finanças sorrindo numa reunião corporativa descontraída
     "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&auto=format&fit=crop"
   ];
   const [imgIndex, setImgIndex] = useState(0);
 
-  // Sistema de rotação robusto com preloading nativo contra ecrãs cinzentos
+  // Rotação com preloading nativo
   useEffect(() => {
     const timer = setInterval(() => {
-      // Calcula o próximo índice
       const nextIndex = (imgIndex + 1) % sellImages.length;
-      
-      // Cria um objeto de imagem em memória para forçar o download
       const imgCache = new Image();
       imgCache.src = sellImages[nextIndex];
-      
-      // Só troca o índice visual quando o browser confirmar que o download terminou
       imgCache.onload = () => {
         setImgIndex(nextIndex);
       };
-    }, 4500); // Troca a cada 4.5 segundos
+    }, 4500);
     return () => clearInterval(timer);
   }, [imgIndex, sellImages.length]);
-
-  // CONTROLE CRÍTICO: Garante que o balão verde do Tawk.to fique invisível ao entrar na página
-  useEffect(() => {
-    if (typeof window !== "undefined" && (window as any).Tawk_API) {
-      try {
-        (window as any).Tawk_API.hideWidget();
-      } catch (e) {
-        console.error("Erro ao esconder widget de venda:", e);
-      }
-    }
-  }, []);
 
   // Lógica de cálculo sincronizada com as Taxas de VENDA (sellRates)
   useEffect(() => {
     const updateResult = async () => {
       try {
-        // Passamos 'true' explicitamente para ativar a tabela de venda
         const rateValue = await convert(1, fromCurr, toCurr, true);
-        
-        // Fallback de segurança usando a tabela de venda
         const finalRate = rateValue && rateValue > 0 
           ? rateValue 
           : getExchangeRate(fromCurr, toCurr, true);
@@ -80,41 +62,14 @@ const Sell = () => {
     updateResult();
   }, [amount, fromCurr, toCurr]);
 
-  // FUNÇÃO DO BOTÃO: Abre o chat às claras e despacha os metadados da venda ao operador
+  // FUNÇÃO ATUALIZADA: Abre o modal injetando o contexto limpo para o banco de dados
   const handleNegociarVenda = (e: React.MouseEvent) => {
     e.preventDefault();
-
-    const mensagemFinal = `Olá Nexus Change! Realizei uma simulação de VENDA (Cash-out) no site.\n\n` +
-                          `• Moeda que possuo: ${fromCurr}\n` +
-                          `• Quantidade a Entregar: ${amount} ${fromCurr}\n` +
-                          `• Total a Receber in Angola: ${result.toLocaleString('pt-PT')} AOA\n` +
-                          `• Cotação de Garantia: ${currentRate} AOA\n\n` +
-                          `Pretendo avançar com o Cash-out e coordenar as contas com o operador.`;
-
-    if (typeof window !== "undefined" && (window as any).Tawk_API) {
-      const tawk = (window as any).Tawk_API;
-      
-      // Força a exibição e maximização do chat
-      tawk.showWidget();
-      tawk.maximize();
-      
-      // Conecta os atributos organizados na consola do seu operador
-      if (tawk.setAttributes) {
-        tawk.setAttributes({
-          'Simulacao-Tipo': 'VENDA_CASHOUT',
-          'Simulacao-Moeda': fromCurr,
-          'Simulacao-Montante': `${amount} ${fromCurr}`,
-          'Simulacao-Retorno-Kz': `${result.toLocaleString('pt-PT')} AOA`
-        });
-      }
-    } else {
-      // Alternativa via e-mail corporativo em caso de falha de scripts de rede
-      window.location.href = `mailto:nexuschangesuporte@gmail.com?subject=Ordem de Venda Cash-out&body=${encodeURIComponent(mensagemFinal)}`;
-    }
+    setIsChatOpen(true);
   };
 
   return (
-    <div className="min-h-screen w-full bg-slate-50 pb-20 animate-in fade-in duration-700">
+    <div className="min-h-screen w-full bg-slate-50 pb-20 animate-in fade-in duration-700 font-sans text-left">
       {/* HEADER */}
       <header className="p-6 flex items-center gap-4 bg-white border-b sticky top-0 z-50">
         <Button variant="ghost" size="icon" onClick={() => navigate("/")} className="rounded-full">
@@ -124,7 +79,7 @@ const Sell = () => {
       </header>
 
       <div className="max-w-4xl mx-auto px-4 mt-8 space-y-10 text-left">
-        {/* CARROSSEL E CONTEÚDO DE VENDA ADAPTADO */}
+        {/* CARROSSEL E CONTEÚDO DE VENDA */}
         <section className="space-y-6">
           <div className="relative w-full h-64 md:h-80 overflow-hidden rounded-[2.5rem] shadow-xl border border-white bg-[#1a4571]">
             {sellImages.map((img, idx) => (
@@ -188,10 +143,10 @@ const Sell = () => {
                 </div>
               </div>
 
-              {/* BOTÃO CORRIGIDO E INTERLIGADO AO ATENDIMENTO WEB */}
+              {/* BOTÃO INTERLIGADO AO MODAL DO SUPABASE */}
               <Button 
                 onClick={handleNegociarVenda}
-                className="w-full h-16 bg-[#1a4571] hover:bg-black text-white font-black text-lg rounded-2xl transition-all shadow-xl shadow-blue-900/20 gap-3 group"
+                className="w-full h-16 bg-[#1a4571] hover:bg-black text-white font-black text-lg rounded-2xl transition-all shadow-xl shadow-blue-900/20 gap-3 group animate-pulse"
               >
                 VENDER VIA OPERADOR
                 <MessageSquare size={20} className="group-hover:scale-110 transition-transform" />
@@ -216,6 +171,13 @@ const Sell = () => {
           </div>
         </Card>
       </div>
+
+      {/* COMPONENTE DO CHAT PRIVADO DINÂMICO */}
+      <ChatNexusModal 
+        isOpen={isChatOpen} 
+        onClose={() => setIsChatOpen(false)} 
+        contexto={`Venda de ${amount} ${fromCurr} por ${result.toLocaleString('pt-PT')} AOA`} 
+      />
     </div>
   );
 };
