@@ -30,7 +30,7 @@ import Terms from "./pages/Terms";
 import About from "./pages/About";
 import FAQ from "./pages/FAQ";
 
-// NOVO: Importação do Painel Administrativo do Chat Secreto
+// NOVO: Importação padrão para compatibilidade total com o Vite/Lovable
 import AdminChat from "./pages/AdminChat";
 
 const queryClient = new QueryClient();

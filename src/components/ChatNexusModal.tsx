@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabase";
-import { X, Send, Lock } from "lucide-react";
+import { X, Send, Lock, Paperclip, FileText } from "lucide-react";
 
 interface Message {
   id: string;
@@ -68,14 +68,14 @@ export const ChatNexusModal = ({ isOpen, onClose, contexto }: ChatNexusModalProp
 
   if (!isOpen) return null;
 
-  // Avança para o chat instantaneamente sem bater na tabela bloqueada!
+  // Avança para o chat instantaneamente
   const handleStartChat = (e: React.FormEvent) => {
     e.preventDefault();
     if (!clientName.trim()) return;
     setStep("chat");
   };
 
-  // 2. Enviar mensagem direto para o banco de dados
+  // 2. Enviar mensagem direta para o banco de dados
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
@@ -104,6 +104,46 @@ export const ChatNexusModal = ({ isOpen, onClose, contexto }: ChatNexusModalProp
     if (error) {
       console.error("Erro ao enviar mensagem:", error);
     }
+  };
+
+  // 3. Processar envio de ficheiros/comprovativos (Converter em Base64)
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Limite de 2MB para evitar sobrecarga no payload de texto do banco de dados
+    if (file.size > 2 * 1024 * 1024) {
+      alert("O comprovativo é muito pesado! Por favor, reduza o tamanho da imagem ou tire um print screen mais leve.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      const base64String = reader.result as string;
+
+      // Renderiza o balão do documento localmente na hora para dar feedback visual instantâneo
+      const mensagemLocal: Message = {
+        id: crypto.randomUUID(),
+        room_id: SalaIdentificador,
+        sender: "cliente",
+        message: `[FICHEIRO]${base64String}`,
+        created_at: new Date().toISOString()
+      };
+      setMessages((prev) => [...prev, mensagemLocal]);
+
+      // Insere no banco com a tag especial [FICHEIRO] que o teu AdminChat já sabe interpretar
+      const { error } = await supabase.from("chat_messages").insert({
+        room_id: SalaIdentificador,
+        sender: "cliente",
+        message: `[${contexto}] [FICHEIRO]${base64String}`
+      });
+
+      if (error) {
+        alert(`Falha ao subir comprovativo: ${error.message}`);
+      }
+    };
+
+    reader.readAsDataURL(file);
   };
 
   return (
@@ -150,22 +190,54 @@ export const ChatNexusModal = ({ isOpen, onClose, contexto }: ChatNexusModalProp
               <p className="text-center text-[10px] text-slate-400 font-bold uppercase tracking-wider py-2 bg-slate-100 rounded-lg">
                 Canal iniciado por {clientName}
               </p>
-              {messages.map((msg) => (
-                <div key={msg.id} className={`flex ${msg.sender === "cliente" ? "justify-end" : "justify-start"}`}>
-                  <div className={`max-w-[80%] p-3.5 rounded-2xl text-xs font-medium leading-relaxed ${
-                    msg.sender === "cliente"
-                      ? "bg-[#1a4571] text-white rounded-tr-none shadow-xs"
-                      : "bg-white text-slate-700 border border-slate-200 rounded-tl-none shadow-xs"
-                  }`}>
-                    {msg.message.replace(`[${contexto}] `, "")}
+              {messages.map((msg) => {
+                // Remove as marcas de contexto visual do cliente
+                let rawText = msg.message.replace(`[${contexto}] `, "");
+                const isFile = rawText.startsWith("[FICHEIRO]") || rawText.startsWith("data:image/");
+                
+                if (rawText.startsWith("[FICHEIRO]")) {
+                  rawText = rawText.replace("[FICHEIRO]", "");
+                }
+
+                return (
+                  <div key={msg.id} className={`flex ${msg.sender === "cliente" ? "justify-end" : "justify-start"}`}>
+                    <div className={`max-w-[80%] p-3.5 rounded-2xl text-xs font-medium leading-relaxed shadow-xs ${
+                      msg.sender === "cliente"
+                        ? "bg-[#1a4571] text-white rounded-tr-none"
+                        : "bg-white text-slate-700 border border-slate-200 rounded-tl-none"
+                    }`}>
+                      {isFile ? (
+                        <div className="flex items-center gap-2 bg-black/10 p-2 rounded-xl text-white">
+                          <FileText size={16} className="shrink-0" />
+                          <div className="flex flex-col text-[11px]">
+                            <span className="font-bold">Comprovativo Enviado</span>
+                            <span className="text-[9px] opacity-75">Aguardando validação</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <p>{rawText}</p>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Input */}
+            {/* Input com botão de anexo integrado */}
             <form onSubmit={handleSendMessage} className="p-4 bg-white border-t flex gap-2 items-center">
+              
+              {/* Botão do Clipe para Upload de Comprovativos */}
+              <label className="h-12 w-12 bg-slate-50 border border-slate-200 text-slate-500 flex items-center justify-center rounded-xl hover:bg-slate-100 cursor-pointer transition-colors shrink-0" title="Anexar Comprovativo">
+                <Paperclip size={18} />
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  onChange={handleFileUpload} 
+                  className="hidden" 
+                />
+              </label>
+
               <input
                 type="text"
                 placeholder="Digite os dados da conta ou proposta..."
@@ -173,7 +245,7 @@ export const ChatNexusModal = ({ isOpen, onClose, contexto }: ChatNexusModalProp
                 onChange={(e) => setNewMessage(e.target.value)}
                 className="flex-1 h-12 px-4 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-[#1a4571] text-slate-700"
               />
-              <button type="submit" className="w-12 h-12 bg-[#1a4571] hover:bg-black text-white flex items-center justify-center rounded-xl transition-colors">
+              <button type="submit" className="w-12 h-12 bg-[#1a4571] hover:bg-black text-white flex items-center justify-center rounded-xl transition-colors shrink-0">
                 <Send size={14} />
               </button>
             </form>
