@@ -16,7 +16,7 @@ const Services = () => {
   const navigate = useNavigate();
 
   // ⚠️ ATENÇÃO: Substitui as letras X pelo teu número real de Angola (Ex: 244912345678)
-  const numeroWhatsapp = "2449XXXXXXXX";
+  const numeroWhatsapp = "244928669514";
 
   const services = [
     {
