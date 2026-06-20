@@ -7,7 +7,6 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { convert, getExchangeRate } from "@/lib/currencies";
 import { ArrowLeft, MessageSquare, ShieldCheck, Wallet } from "lucide-react";
-import { ChatNexusModal } from "@/components/ChatNexusModal"; 
 
 const Buy = () => {
   const navigate = useNavigate();
@@ -16,8 +15,6 @@ const Buy = () => {
   const [currentRate, setCurrentRate] = useState<number>(0);
   const [fromCurr, setFromCurr] = useState("USD");
   const [toCurr, setToCurr] = useState("AOA");
-  
-  const [isChatOpen, setIsChatOpen] = useState(false);
 
   const buyImages = [
     "https://images.unsplash.com/photo-1611974714658-30d06154625b?auto=format&fit=crop&w=800&q=80",
@@ -58,10 +55,27 @@ const Buy = () => {
     updateResult();
   }, [amount, fromCurr, toCurr]);
 
-  // FIX: Nome da função corrigido para bater certo com o onClick do teu botão!
+  // REDIRECIONAMENTO WHATSAPP AUTOMÁTICO E CONTEXTUALIZADO
   const handleNegociarOperador = (e: React.MouseEvent) => {
     e.preventDefault();
-    setIsChatOpen(true);
+    
+    // ⚠️ ATENÇÃO: Substitui as letras X pelo teu número real de Angola (Ex: 244912345678)
+    const numeroWhatsapp = "244928669514"; 
+    
+    // Formata o total em Kwanzas para ficar bonito na mensagem (ex: 150.000)
+    const totalFormatado = result.toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    
+    // Monta a mensagem personalizada capturando os dados atuais do simulador
+    const mensagem = `Olá! Gostaria de *comprar* divisas com o operador.\n\n` +
+                     `👉 *Quero comprar:* ${amount} ${fromCurr}\n` +
+                     `💰 *Total estimado:* ${totalFormatado} AOA\n\n` +
+                     `Estou disponível para concluir a transferência.`;
+
+    // Codifica o texto para formato URL padrão do WhatsApp
+    const urlWhatsapp = `https://wa.me/${numeroWhatsapp}?text=${encodeURIComponent(mensagem)}`;
+    
+    // Abre o WhatsApp numa nova aba de forma limpa e segura
+    window.open(urlWhatsapp, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -163,12 +177,6 @@ const Buy = () => {
           </div>
         </Card>
       </div>
-
-      <ChatNexusModal 
-        isOpen={isChatOpen} 
-        onClose={() => setIsChatOpen(false)} 
-        contexto={`Compra de ${amount} ${fromCurr} por ${result.toLocaleString('pt-PT')} AOA`} 
-      />
     </div>
   );
 };

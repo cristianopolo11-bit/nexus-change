@@ -7,7 +7,6 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { convert, getExchangeRate } from "@/lib/currencies";
 import { ArrowLeft, MessageSquare, HandCoins, ShieldCheck } from "lucide-react";
-import { ChatNexusModal } from "@/components/ChatNexusModal"; // INJETADO: O nosso modal do Supabase
 
 const Sell = () => {
   const navigate = useNavigate();
@@ -16,9 +15,6 @@ const Sell = () => {
   const [currentRate, setCurrentRate] = useState<number>(0);
   const [fromCurr, setFromCurr] = useState("USD");
   const [toCurr, setToCurr] = useState("AOA");
-  
-  // ESTADOS DO CHAT PRIVADO
-  const [isChatOpen, setIsChatOpen] = useState(false);
 
   // GALERIA DE FOTOS
   const sellImages = [
@@ -62,10 +58,27 @@ const Sell = () => {
     updateResult();
   }, [amount, fromCurr, toCurr]);
 
-  // FUNÇÃO ATUALIZADA: Abre o modal injetando o contexto limpo para o banco de dados
+  // REDIRECIONAMENTO WHATSAPP AUTOMÁTICO E CONTEXTUALIZADO
   const handleNegociarVenda = (e: React.MouseEvent) => {
     e.preventDefault();
-    setIsChatOpen(true);
+    
+    // ⚠️ ATENÇÃO: Substitui as letras X pelo teu número real de Angola (Ex: 244912345678)
+    const numeroWhatsapp = "244928669514"; 
+    
+    // Formata o total em Kwanzas para ficar bonito na mensagem (ex: 150.000)
+    const totalFormatado = result.toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    
+    // Monta a mensagem personalizada capturando os dados atuais do simulador de venda
+    const mensagem = `Olá! Gostaria de *vender* divisas com o operador.\n\n` +
+                     `👉 *Tenho para vender:* ${amount} ${fromCurr}\n` +
+                     `💰 *Total estimado a receber:* ${totalFormatado} AOA\n\n` +
+                     `Aguardo as instruções de transferência do operador.`;
+
+    // Codifica o texto para formato URL padrão do WhatsApp
+    const urlWhatsapp = `https://wa.me/${numeroWhatsapp}?text=${encodeURIComponent(mensagem)}`;
+    
+    // Abre o WhatsApp numa nova aba de forma limpa e segura
+    window.open(urlWhatsapp, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -143,10 +156,9 @@ const Sell = () => {
                 </div>
               </div>
 
-              {/* BOTÃO INTERLIGADO AO MODAL DO SUPABASE */}
               <Button 
                 onClick={handleNegociarVenda}
-                className="w-full h-16 bg-[#1a4571] hover:bg-black text-white font-black text-lg rounded-2xl transition-all shadow-xl shadow-blue-900/20 gap-3 group animate-pulse"
+                className="w-full h-16 bg-[#1a4571] hover:bg-black text-white font-black text-lg rounded-2xl transition-all shadow-xl shadow-blue-900/20 gap-3 group"
               >
                 VENDER VIA OPERADOR
                 <MessageSquare size={20} className="group-hover:scale-110 transition-transform" />
@@ -171,13 +183,6 @@ const Sell = () => {
           </div>
         </Card>
       </div>
-
-      {/* COMPONENTE DO CHAT PRIVADO DINÂMICO */}
-      <ChatNexusModal 
-        isOpen={isChatOpen} 
-        onClose={() => setIsChatOpen(false)} 
-        contexto={`Venda de ${amount} ${fromCurr} por ${result.toLocaleString('pt-PT')} AOA`} 
-      />
     </div>
   );
 };

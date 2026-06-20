@@ -18,7 +18,7 @@ const Privacy = () => {
         {/* BLOCO CENTRAL DE PRIVACIDADE COM ANIMAÇÃO */}
         <section 
           data-aos="fade-up"
-          className="bg-white p-8 md:p-12 border-none shadow-[0_20px_50px_rgba(0,0,0,0.08)] bg-white rounded-[2rem] space-y-8 text-slate-600 font-medium text-sm leading-relaxed"
+          className="bg-white p-8 md:p-12 border-none shadow-[0_20px_50px_rgba(0,0,0,0.08)] rounded-[2rem] space-y-8 text-slate-600 font-medium text-sm leading-relaxed"
         >
           <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
             <ShieldCheck size={36} className="text-[#1a4571]" />
@@ -37,17 +37,17 @@ const Privacy = () => {
               <Globe size={18} /> Operação Financeira Descentralizada
             </h3>
             <p>
-              O nosso ecossistema foi projetado para investidores e clientes que procuram agilidade. **Não solicitamos, não processamos e não armazenamos passwords de cartões ou dados bancários sensíveis** neste website. O papel da plataforma é fornecer cotações dinâmicas e estabelecer canais de comunicação diretos e encriptados.
+              O nosso ecossistema foi projetado para investidores e clientes que procuram agilidade. **Não solicitamos, não processamos e não armazenamos passwords de cartões ou dados bancários sensíveis** neste website. O papel da plataforma é fornecer cotações dinâmicas e estabelecer canais de comunicação diretos e seguros.
             </p>
           </div>
 
           {/* Diretriz 2 */}
           <div className="space-y-2">
             <h3 className="text-lg font-black text-[#1a4571] uppercase italic flex items-center gap-2">
-              <Lock size={18} /> Negociação Protegida e Criptografada
+              <Lock size={18} /> Negociação Assistida e Protegida
             </h3>
             <p>
-              Em conformidade com os mais altos padrões digitais, a validação e o fecho de qualquer operação cambial ocorrem num ambiente privado. Todas as informações, dados de liquidação (como chaves de carteiras digitais ou IBAN) e comprovativos partilhados no nosso chat privado são encriptados e destruídos ou arquivados de forma estritamente segura após o término e liquidação da ordem.
+              Em conformidade com as boas práticas de proteção de dados, a validação e o fecho de qualquer operação cambial ocorrem num ambiente privado e humano. Todas as informações operacionais, dados de liquidação (como chaves de carteiras digitais ou IBAN) e comprovativos partilhados de forma voluntária no atendimento direto são tratados com sigilo absoluto e utilizados estritamente para a execução da ordem solicitada.
             </p>
           </div>
 
@@ -57,17 +57,17 @@ const Privacy = () => {
               <EyeOff size={18} /> Retenção Mínima de Dados
             </h3>
             <p>
-              Respeitamos a privacidade do cliente em qualquer localidade. Os cookies utilizados neste portal servem unicamente para fins analíticos anónimos e para garantir que as tuas preferências de moedas e do montante em Kwanza (AOA) sejam mantidas durante a simulação, sem rastreio de identidade.
+              Respeitamos a privacidade do cliente em qualquer localidade. Os cookies utilizados neste portal servem unicamente para fins analíticos anónimos e para garantir que as tuas preferências de moedas e do montante em Kwanza (AOA) sejam mantidas temporariamente durante a simulação, sem rastreio ou armazenamento da tua identidade.
             </p>
           </div>
 
           {/* Diretriz 4 */}
           <div className="space-y-2">
             <h3 className="text-lg font-black text-[#1a4571] uppercase italic flex items-center gap-2">
-              <MessageSquare size={18} /> Verificação de Canais Oficiais
+              <MessageSquare size={18} /> Canais Oficiais de Atendimento
             </h3>
             <p>
-              Para a sua total segurança, realize as suas transações exclusivamente através do assistente de chat nativo presente na nossa plataforma oficial ou através dos links gerados diretamente por este domínio. A Nexus Change **nunca solicita dados de acesso, códigos de autenticação ou transferências imediatas através de chamadas telefónicas**.
+              Para a sua total segurança, realize as suas transações exclusivamente através dos botões oficiais de redirecionamento para o nosso WhatsApp presentes nesta plataforma. A Nexus Change **nunca solicita dados de acesso, códigos de autenticação ou transferências imediatas através de chamadas telefónicas ou links externos não verificados**.
             </p>
           </div>
 

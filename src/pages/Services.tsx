@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { 
   ShoppingCart, 
@@ -11,14 +11,12 @@ import {
   MessageSquare
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { ChatNexusModal } from "@/components/ChatNexusModal"; // INJETADO: O nosso novo modal privado
 
 const Services = () => {
   const navigate = useNavigate();
 
-  // ESTADOS DO CHAT: Controlam o comportamento da mesa de negociação privada
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const [chatContext, setChatContext] = useState("");
+  // ⚠️ ATENÇÃO: Substitui as letras X pelo teu número real de Angola (Ex: 244912345678)
+  const numeroWhatsapp = "2449XXXXXXXX";
 
   const services = [
     {
@@ -63,13 +61,22 @@ const Services = () => {
     }
   ];
 
-  // GESTÃO DE CLIQUE INTELIGENTE: Roteia ou abre o Modal Supabase Privado
+  // ROTEAMENTO OU REDIRECIONAMENTO WHATSAPP
   const handleCardClick = (service: typeof services[0]) => {
     if (service.actionType === "route" && service.path) {
       navigate(service.path);
     } else if (service.actionType === "chat") {
-      setChatContext(service.title);
-      setIsChatOpen(true);
+      let mensagem = `Olá! Gostaria de obter suporte para o serviço de *${service.title}* na Nexus Change.`;
+      
+      // Personalização extra caso queiras textos específicos por card
+      if (service.title.includes("Carteiras")) {
+        mensagem = `Olá! Preciso de ajuda para *criar e verificar uma Carteira Digital* (Wise, RedotPay ou Binance) através da Nexus Change.`;
+      } else if (service.title.includes("Pagamentos")) {
+        mensagem = `Olá! Gostaria de realizar um *Pagamento Internacional* (compra online ou fatura) com o operador da Nexus Change.`;
+      }
+
+      const urlWhatsapp = `https://wa.me/${numeroWhatsapp}?text=${encodeURIComponent(mensagem)}`;
+      window.open(urlWhatsapp, "_blank", "noopener,noreferrer");
     }
   };
 
@@ -89,9 +96,11 @@ const Services = () => {
           {services.map((service, index) => (
             <Card 
               key={index}
-              onClick={() => handleCardClick(service)}
+              onClick={() => service.actionType !== "soon" && handleCardClick(service)}
               data-aos="fade-up"
-              className={`p-8 bg-white border-2 border-transparent transition-all duration-300 cursor-pointer group shadow-xl rounded-[2rem] flex flex-col justify-between ${service.color}`}
+              className={`p-8 bg-white border-2 border-transparent transition-all duration-300 shadow-xl rounded-[2rem] flex flex-col justify-between ${
+                service.actionType === "soon" ? "opacity-75 cursor-not-allowed" : "cursor-pointer " + service.color
+              }`}
             >
               <div className="flex flex-col h-full justify-between">
                 <div>
@@ -119,8 +128,14 @@ const Services = () => {
                 )}
 
                 {service.actionType === "chat" && (
-                  <div className="mt-8 flex items-center text-amber-600 font-black text-xs uppercase tracking-wider gap-2 group-hover:gap-4 transition-all">
-                    SOLICITAR VIA CHAT <MessageSquare size={16} />
+                  <div className="mt-8 flex items-center text-green-600 font-black text-xs uppercase tracking-wider gap-2 group-hover:gap-4 transition-all">
+                    SOLICITAR VIA WHATSAPP <MessageSquare size={16} />
+                  </div>
+                )}
+                
+                {service.actionType === "soon" && (
+                  <div className="mt-8 flex items-center text-slate-400 font-black text-xs uppercase tracking-wider gap-2">
+                    INDISPONÍVEL DE MOMENTO
                   </div>
                 )}
               </div>
@@ -142,13 +157,6 @@ const Services = () => {
           </div>
         </div>
       </div>
-
-      {/* COMPONENTE DO CHAT PRIVADO: Fica ativo aguardando os disparos dos cards */}
-      <ChatNexusModal 
-        isOpen={isChatOpen} 
-        onClose={() => setIsChatOpen(false)} 
-        contexto={chatContext} 
-      />
     </div>
   );
 };

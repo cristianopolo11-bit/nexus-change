@@ -18,7 +18,7 @@ const Terms = () => {
         {/* BLOCO CENTRAL DE TERMOS COM ANIMAÇÃO */}
         <section 
           data-aos="fade-up"
-          className="bg-white p-8 md:p-12 border-none shadow-[0_20px_50px_rgba(0,0,0,0.08)] bg-white rounded-[2rem] space-y-8 text-slate-600 font-medium text-sm leading-relaxed"
+          className="bg-white p-8 md:p-12 border-none shadow-[0_20px_50px_rgba(0,0,0,0.08)] rounded-[2rem] space-y-8 text-slate-600 font-medium text-sm leading-relaxed"
         >
           <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
             <FileText size={36} className="text-[#1a4571]" />
@@ -40,9 +40,9 @@ const Terms = () => {
               A Nexus Change disponibiliza um ecossistema digital focado na simulação e facilitação de intermediação financeira. É expressamente estipulado que:
             </p>
             <ul className="list-disc pl-5 space-y-2 text-slate-500 text-xs">
-              <li><strong className="text-slate-600">Simulador Dinâmico:</strong> As taxas de câmbio apresentadas no portal servem como referência de mercado em tempo real. O valor exato e definitivo da operação será fixado apenas no momento da negociação direta.</li>
-              <li><strong className="text-slate-600">Fecho de Operações:</strong> Este website funciona como uma interface de preparação e triagem. Nenhuma transferência financeira ou processamento automático de liquidação local ocorre neste domínio; todas as transações são concluídas de forma privada e segura através do nosso chat assistido.</li>
-              <li><strong className="text-slate-600">Disponibilidade de Liquidez:</strong> A execução das ordens de compra e venda de divisas ou ativos digitais está estritamente condicionada aos limites de stock e liquidez da plataforma no momento da validação do operador.</li>
+              <li><strong className="text-slate-600">Simulador Dinâmico:</strong> As taxas de câmbio apresentadas no portal servem como referência de mercado em tempo real. O valor exato e definitivo da operação será fixado apenas no momento da negociação direta com o operador.</li>
+              <li><strong className="text-slate-600">Fecho de Operações:</strong> Este website funciona como uma interface de preparação, simulação e triagem. Nenhuma transferência financeira ou liquidação automática ocorre neste domínio; todas as transações são concluídas de forma humana, privada e segura através do nosso canal de atendimento assistido.</li>
+              <li><strong className="text-slate-600">Disponibilidade de Liquidez:</strong> A execução das ordens de compra e venda de divisas ou serviços está estritamente condicionada aos limites de stock e liquidez da plataforma no momento da validação pelo operador.</li>
             </ul>
           </div>
 
@@ -55,9 +55,9 @@ const Terms = () => {
               Ao utilizar as ferramentas da nossa plataforma em território nacional, o utilizador assume e declara que:
             </p>
             <ul className="list-disc pl-5 space-y-2 text-slate-500 text-xs">
-              <li>Todos os montantes introduzidos e dados preenchidos refletem uma intenção operacional verídica e legítima.</li>
-              <li>Compreende a volatilidade das taxas cambiais e aceita que valores simulados podem sofrer atualizações devido a flutuações de mercado até ao momento do contacto efetivo.</li>
-              <li>É o único responsável por garantir que os seus dados de liquidação externos fornecidos ao operador estão corretos.</li>
+              <li>Todos os montantes introduzidos e dados simulados refletem uma intenção operacional verídica e legítima.</li>
+              <li>Compreende a volatilidade das taxas cambiais e aceita que os valores simulados podem sofrer atualizações devido a flutuações de mercado até ao momento do contacto efetivo.</li>
+              <li>É o único responsável por garantir que as suas contas de receção externa ou dados de liquidação fornecidos diretamente ao operador estão corretos.</li>
             </ul>
           </div>
 
@@ -74,10 +74,10 @@ const Terms = () => {
           {/* Diretriz 4 */}
           <div className="space-y-2">
             <h3 className="text-lg font-black text-[#1a4571] uppercase italic flex items-center gap-2">
-              <HelpCircle size={18} /> Segurança de Canais e Intermediação
+              <HelpCircle size={18} /> Segurança de Canais e Atendimento
             </h3>
             <p>
-              Para resguardar os seus fundos, realize as suas transações única e exclusivamente através do painel de chat encriptado integrado nativamente neste domínio oficial. A Nexus Change declina qualquer tipo de responsabilidade por perdas ou negociações efetuadas através de terceiros ou em plataformas externas não validadas pela nossa marca.
+              Para resguardar os seus fundos, realize as suas transações única e exclusivamente através dos botões oficiais de redirecionamento para o nosso canal de atendimento no WhatsApp vinculados nativamente neste domínio oficial. A Nexus Change declina qualquer tipo de responsabilidade por perdas ou negociações efetuadas através de contactos de terceiros ou em plataformas externas não validadas oficialmente pela nossa marca.
             </p>
           </div>
 
