@@ -43,22 +43,26 @@ iframe[title="chat widget"],
   opacity: 0 !important;
 }
 
-/* 🌐 GOOGLE TRANSLATE CLEANUP
-   Limpeza de elementos estéticos injetados pela API do Google Translate
-   para manter o design moderno da Nexus sem barras ou overlays feios.
+/* 🌐 GOOGLE TRANSLATE CLEANUP COMPLETO
+   Varre por completo barras, balões e overlays injetados pela API do Google
+   para manter o ecrã totalmente limpo e focado no design da Nexus.
 */
 .goog-te-banner-frame.skiptranslate, 
 .goog-te-banner-frame, 
 .goog-te-balloon-frame,
 #goog-gt-tt,
 .goog-te-tooltip,
-.goog-te-tooltip:hover {
+.goog-te-tooltip:hover,
+.skiptranslate {
   display: none !important;
   visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
 }
 
 body {
   top: 0 !important;
+  position: static !important;
 }
 
 .goog-text-highlight {

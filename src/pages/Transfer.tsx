@@ -50,7 +50,6 @@ const Transfer = () => {
   useEffect(() => {
     const updateConversion = async () => {
       try {
-        // Usando a tua lógica existente do ficheiro lib/currencies
         const rateValue = await convert(1, fromCurr, toCurr, false);
         const finalRate = rateValue && rateValue > 0 
           ? rateValue 
@@ -77,13 +76,12 @@ const Transfer = () => {
       return;
     }
 
-    // ⚠️ Substitui pelo teu número real de Angola
-    const numeroWhatsapp = "2449XXXXXXXX"; 
+    // Link direto para o teu operador
+    const numeroWhatsapp = "244928669514"; 
     
     const totalFormatado = result.toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const quantiaFormatada = amount.toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-    // Mensagem super estruturada que vai chegar ao teu WhatsApp
     const mensagem = `🚀 *NOVA SOLICITAÇÃO DE TRANSFERÊNCIA*\n\n` +
                      `👤 *ORDENANTE (QUEM ENVIA):*\n` +
                      `• Nome: ${senderName}\n` +
@@ -143,7 +141,9 @@ const Transfer = () => {
                     onChange={(e) => setSenderCountry(e.target.value)}
                     className="w-full h-12 bg-white border border-slate-200 rounded-xl px-3 font-medium text-sm text-slate-700 focus:border-[#1a4571] outline-none"
                   >
-                    {countries.map((c) => <option key={c} value={c}>{c}</option>)}
+                    {countries.map((c) => (
+                      <option key={c} value={c} className="notranslate" translate="no">{c}</option>
+                    ))}
                   </select>
                 </div>
 
@@ -154,7 +154,9 @@ const Transfer = () => {
                     onChange={(e) => setSenderMethod(e.target.value)}
                     className="w-full h-12 bg-white border border-slate-200 rounded-xl px-3 font-medium text-sm text-slate-700 focus:border-[#1a4571] outline-none"
                   >
-                    {methods.map((m) => <option key={m} value={m}>{m}</option>)}
+                    {methods.map((m) => (
+                      <option key={m} value={m} className="notranslate" translate="no">{m}</option>
+                    ))}
                   </select>
                 </div>
               </div>
@@ -189,7 +191,9 @@ const Transfer = () => {
                     onChange={(e) => setReceiverCountry(e.target.value)}
                     className="w-full h-12 bg-white border border-slate-200 rounded-xl px-3 font-medium text-sm text-slate-700 focus:border-[#1a4571] outline-none"
                   >
-                    {countries.map((c) => <option key={c} value={c}>{c}</option>)}
+                    {countries.map((c) => (
+                      <option key={c} value={c} className="notranslate" translate="no">{c}</option>
+                    ))}
                   </select>
                 </div>
 
@@ -200,7 +204,9 @@ const Transfer = () => {
                     onChange={(e) => setReceiverMethod(e.target.value)}
                     className="w-full h-12 bg-white border border-slate-200 rounded-xl px-3 font-medium text-sm text-slate-700 focus:border-[#1a4571] outline-none"
                   >
-                    {methods.map((m) => <option key={m} value={m}>{m}</option>)}
+                    {methods.map((m) => (
+                      <option key={m} value={m} className="notranslate" translate="no">{m}</option>
+                    ))}
                   </select>
                 </div>
               </div>
@@ -234,7 +240,9 @@ const Transfer = () => {
                       onChange={(e) => setFromCurr(e.target.value)}
                       className="w-full h-12 bg-slate-50 border border-slate-200 rounded-xl px-3 font-black text-sm text-slate-700 outline-none"
                     >
-                      {currencies.map((curr) => <option key={curr} value={curr}>{curr}</option>)}
+                      {currencies.map((curr) => (
+                        <option key={curr} value={curr} className="notranslate" translate="no">{curr}</option>
+                      ))}
                     </select>
                   </div>
                   <div>
@@ -244,7 +252,9 @@ const Transfer = () => {
                       onChange={(e) => setToCurr(e.target.value)}
                       className="w-full h-12 bg-slate-50 border border-slate-200 rounded-xl px-3 font-black text-sm text-slate-700 outline-none"
                     >
-                      {currencies.map((curr) => <option key={curr} value={curr}>{curr}</option>)}
+                      {currencies.map((curr) => (
+                        <option key={curr} value={curr} className="notranslate" translate="no">{curr}</option>
+                      ))}
                     </select>
                   </div>
                 </div>
@@ -255,11 +265,11 @@ const Transfer = () => {
                 <div>
                   <span className="text-[10px] font-bold text-blue-200 uppercase tracking-widest block mb-1">Total estimado a receber</span>
                   <div className="text-3xl font-black tracking-tight">
-                    {result.toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-lg font-bold text-blue-300">{toCurr}</span>
+                    {result.toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-lg font-bold text-blue-300 notranslate" translate="no">{toCurr}</span>
                   </div>
                 </div>
                 <div className="text-[11px] text-blue-200 font-medium border-t border-blue-800/60 pt-2 flex justify-between">
-                  <span>Taxa: 1 {fromCurr} = {currentRate} {toCurr}</span>
+                  <span className="notranslate" translate="no">Taxa: 1 {fromCurr} = {currentRate} {toCurr}</span>
                   <ShieldCheck size={14} className="text-emerald-400" />
                 </div>
               </div>
@@ -269,7 +279,7 @@ const Transfer = () => {
               type="submit"
               className="w-full h-16 bg-green-600 hover:bg-green-700 text-white font-black text-lg rounded-xl transition-all shadow-lg flex items-center justify-center gap-3 group"
             >
-              CONCLUIR VIA WHATSAPP
+              COMPLETO VÍA WHATSAPP
               <Send size={20} className="group-hover:translate-x-1 transition-transform" />
             </Button>
           </Card>
