@@ -32,8 +32,8 @@
 }
 
 /* CUSTOM INTEGRATION: Nexus Change + Tawk.to
-  Esconde o balão flutuante verde original para manter a interface limpa.
-  O chat será invocado exclusivamente através dos botões das nossas páginas.
+   Esconde o balão flutuante verde original para manter a interface limpa.
+   O chat será invocado exclusivamente através dos botões das nossas páginas.
 */
 iframe[title="chat widget"], 
 .tawk-min-container, 
@@ -41,4 +41,28 @@ iframe[title="chat widget"],
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
+}
+
+/* 🌐 GOOGLE TRANSLATE CLEANUP
+   Limpeza de elementos estéticos injetados pela API do Google Translate
+   para manter o design moderno da Nexus sem barras ou overlays feios.
+*/
+.goog-te-banner-frame.skiptranslate, 
+.goog-te-banner-frame, 
+.goog-te-balloon-frame,
+#goog-gt-tt,
+.goog-te-tooltip,
+.goog-te-tooltip:hover {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+body {
+  top: 0 !important;
+}
+
+.goog-text-highlight {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  box-sizing: border-box !important;
 }

@@ -38,14 +38,41 @@ const queryClient = new QueryClient();
 
 export default function App() {
   
-  // 2. INICIALIZAÇÃO DA MÁQUINA DE ANIMAÇÕES AUTOMÁTICA
+  // 2. INICIALIZAÇÃO DA MÁQUINA DE ANIMAÇÕES E TRADUTOR AUTOMÁTICO
   useEffect(() => {
+    // Inicializa animações de scroll
     AOS.init({
       duration: 800,     // Tempo que a animação demora a completar (800ms = rápido e elegante)
-      once: true,         // Executa a animação apenas uma vez ao descer o ecrã (evita repetições cansativas)
-      easing: "ease-out", // Tipo de movimento suave (desacelera ligeiramente no final)
-      offset: 100         // Só dispara a animação quando o elemento estiver a 100px visíveis na tela
+      once: true,         // Executa a animação apenas uma vez ao descer o ecrã
+      easing: "ease-out", // Tipo de movimento suave
+      offset: 100         // Só dispara a animação quando o elemento estiver a 100px visíveis
     });
+
+    // SISTEMA DE TRADUÇÃO: Carrega o Google Translate automaticamente baseado no idioma do utilizador
+    const initGoogleTranslate = () => {
+      if (document.getElementById("google-translate-script")) return;
+
+      // Configuração global exigida pela API do Google
+      (window as any).googleTranslateElementInit = () => {
+        new (window as any).google.translate.TranslateElement(
+          {
+            pageLanguage: "pt", // Idioma base do teu desenvolvimento
+            layout: (window as any).google.translate.TranslateElement.InlineLayout.SIMPLE,
+            autoDisplay: true  // Força a tradução caso o navegador esteja noutro idioma
+          },
+          "google_translate_element"
+        );
+      };
+
+      // Injeta a tag script oficial do tradutor de forma assíncrona
+      const script = document.createElement("script");
+      script.id = "google-translate-script";
+      script.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+      script.async = true;
+      document.body.appendChild(script);
+    };
+
+    initGoogleTranslate();
   }, []);
 
   return (
@@ -57,6 +84,9 @@ export default function App() {
         <BrowserRouter>
           <div className="flex flex-col min-h-screen bg-transparent">
             
+            {/* Elemento oculto necessário para o funcionamento interno do motor do Google Translate */}
+            <div id="google_translate_element" className="hidden"></div>
+
             <main className="flex-grow">
               <Routes>
                 {/* Rota Principal */}
