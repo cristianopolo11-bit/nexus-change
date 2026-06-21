@@ -38,7 +38,7 @@ const Transfer = () => {
   const [receiverCountry, setReceiverCountry] = useState("Portugal");
   const [receiverMethod, setReceiverMethod] = useState("Banco");
 
-  // Conversor e Valores (fromCurr e toCurr agora controlam o select diretamente)
+  // Conversor e Valores
   const [amount, setAmount] = useState<number>(100);
   const [result, setResult] = useState<number>(0);
   const [currentRate, setCurrentRate] = useState<number>(0);
@@ -55,22 +55,32 @@ const Transfer = () => {
       }
 
       try {
+        // Força a chamada de conversão para 1 unidade da moeda de envio
         const rateValue = await convert(1, fromCurr, toCurr, false);
-        const finalRate = rateValue && rateValue > 0 
-          ? rateValue 
-          : getExchangeRate(fromCurr, toCurr, false);
+        
+        // Validação estrita da taxa vinda da API
+        let finalRate = 0;
+        if (rateValue && typeof rateValue === 'number' && rateValue > 0) {
+          finalRate = rateValue;
+        } else {
+          finalRate = getExchangeRate(fromCurr, toCurr, false) || 1;
+        }
+        
+        console.log(`Câmbio Atualizado: 1 ${fromCurr} = ${finalRate} ${toCurr}`);
         
         setCurrentRate(finalRate);
+        // Realiza a multiplicação direta e real baseada no input do cliente
         setResult(amount * finalRate);
       } catch (error) {
         console.error("Erro na conversão de transferência:", error);
-        const fallbackRate = getExchangeRate(fromCurr, toCurr, false);
+        const fallbackRate = getExchangeRate(fromCurr, toCurr, false) || 1;
         setCurrentRate(fallbackRate);
         setResult(amount * fallbackRate);
       }
     };
+    
     updateConversion();
-  }, [amount, fromCurr, toCurr]); // Reage na hora quando alteras as moedas no seletor inferior
+  }, [amount, fromCurr, toCurr]); // Reage imediatamente quando alteras o valor ou as moedas
 
   // --- ENVIO DOS DADOS PARA O WHATSAPP ---
   const handleFinalizarTransferencia = (e: React.FormEvent) => {
@@ -86,7 +96,7 @@ const Transfer = () => {
     const totalFormatado = result.toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const quantiaFormatada = amount.toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-    const mensaje = `🚀 *SOLICITAÇÃO DE TRANSFERÊNCIA INTERNACIONAL*\n\n` +
+    const mensagem = `🚀 *SOLICITAÇÃO DE TRANSFERÊNCIA INTERNACIONAL*\n\n` +
                      `👤 *ORDENANTE (QUEM ENVIA):*\n` +
                      `• Nome: ${senderName}\n` +
                      `• País atual: ${senderCountry}\n` +
@@ -101,7 +111,7 @@ const Transfer = () => {
                      `• Taxa aplicada: 1 ${fromCurr} = ${currentRate} ${toCurr}\n\n` +
                      `Gostaria de receber os dados de liquidação para prosseguir com a ordem.`;
 
-    const urlWhatsapp = `https://wa.me/${numeroWhatsapp}?text=${encodeURIComponent(mensaje)}`;
+    const urlWhatsapp = `https://wa.me/${numeroWhatsapp}?text=${encodeURIComponent(mensagem)}`;
     window.open(urlWhatsapp, "_blank", "noopener,noreferrer");
   };
 
@@ -182,7 +192,7 @@ const Transfer = () => {
                   required
                   placeholder="Ex: Hamilton Silva"
                   value={receiverName}
-                  onChange={(e) => setResult(amount * currentRate) || setReceiverName(e.target.value)}
+                  onChange={(e) => setReceiverName(e.target.value)}
                   className="h-12 border-slate-200 focus:border-[#1a4571] rounded-xl"
                 />
               </div>
