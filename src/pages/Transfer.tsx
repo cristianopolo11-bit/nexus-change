@@ -9,28 +9,31 @@ import { ArrowLeft, Send, ShieldCheck, User, Users, RefreshCw } from "lucide-rea
 const Transfer = () => {
   const navigate = useNavigate();
 
-  // --- LISTAS CONFIGURADAS ---
-  const countries = [
-    "África do Sul",
-    "Angola",
-    "Bélgica",
-    "Bulgária",
-    "Camarões",
-    "Congo Brazzaville",
-    "Congo RDC",
-    "França",
-    "Moçambique",
-    "Portugal"
-  ].sort((a, b) => a.localeCompare(b, "pt-PT"));
+  // --- MAPEAMENTO GEOPOLÍTICO DE PAÍSES E AS SUAS MOEDAS PADRÃO ---
+  const countryToCurrency: { [key: string]: string } = {
+    "África do Sul": "ZAR",
+    "Angola": "AOA",
+    "Bélgica": "EUR",
+    "Bulgária": "BGN",
+    "Camarões": "XAF",
+    "Congo Brazzaville": "XAF",
+    "Congo RDC": "CDF",
+    "França": "EUR",
+    "Moçambique": "MZN",
+    "Portugal": "EUR"
+  };
 
+  const countries = Object.keys(countryToCurrency).sort((a, b) => a.localeCompare(b, "pt-PT"));
   const currencies = ["AOA", "BGN", "CDF", "EUR", "MZN", "XAF", "ZAR"];
   const methods = ["Banco", "Carteira Digital"];
 
   // --- ESTADOS DO FORMULÁRIO ---
+  // Ordenante
   const [senderName, setSenderName] = useState("");
   const [senderCountry, setSenderCountry] = useState("Angola");
   const [senderMethod, setSenderMethod] = useState("Banco");
 
+  // Beneficiário
   const [receiverName, setReceiverName] = useState("");
   const [receiverCountry, setReceiverCountry] = useState("Portugal");
   const [receiverMethod, setReceiverMethod] = useState("Banco");
@@ -39,13 +42,25 @@ const Transfer = () => {
   const [amount, setAmount] = useState<number>(100);
   const [result, setResult] = useState<number>(0);
   const [currentRate, setCurrentRate] = useState<number>(0);
-  const [fromCurr, setFromCurr] = useState("EUR");
-  const [toCurr, setToCurr] = useState("AOA");
+  const [fromCurr, setFromCurr] = useState("AOA"); 
+  const [toCurr, setToCurr] = useState("EUR");     
 
-  // --- LÓGICA DE CONVERSÃO CORRIGIDA E SENSÍVEL A MUDANÇAS ---
+  // --- MUDANÇA AUTOMÁTICA DE MOEDA AO ALTERAR O PAÍS ---
+  useEffect(() => {
+    if (countryToCurrency[senderCountry]) {
+      setFromCurr(countryToCurrency[senderCountry]);
+    }
+  }, [senderCountry]);
+
+  useEffect(() => {
+    if (countryToCurrency[receiverCountry]) {
+      setToCurr(countryToCurrency[receiverCountry]);
+    }
+  }, [receiverCountry]);
+
+  // --- LÓGICA DE CONVERSÃO REAL VIA API ---
   useEffect(() => {
     const updateConversion = async () => {
-      // Se as moedas forem iguais, a taxa é 1 e o resultado é o próprio valor inserido
       if (fromCurr === toCurr) {
         setCurrentRate(1);
         setResult(amount);
@@ -53,21 +68,23 @@ const Transfer = () => {
       }
 
       try {
-        // Faz a chamada assíncrona à API do teu projeto
+        // Pedido assíncrono para obter o câmbio de 1 unidade em tempo real da API
         const rateValue = await convert(1, fromCurr, toCurr, false);
         
         let finalRate = 0;
         if (rateValue && typeof rateValue === 'number' && rateValue > 0) {
           finalRate = rateValue;
         } else {
-          // Fallback seguro usando as tuas taxas internas estabelecidas
+          // Fallback seguro usando as taxas internas locais se a API falhar
           finalRate = getExchangeRate(fromCurr, toCurr, false) || 1;
         }
+        
+        console.log(`[Nexus API] 1 ${fromCurr} = ${finalRate} ${toCurr}`);
         
         setCurrentRate(finalRate);
         setResult(amount * finalRate);
       } catch (error) {
-        console.error("Erro no motor de conversão:", error);
+        console.error("Erro no motor de conversão Nexus:", error);
         const fallbackRate = getExchangeRate(fromCurr, toCurr, false) || 1;
         setCurrentRate(fallbackRate);
         setResult(amount * fallbackRate);
@@ -75,7 +92,7 @@ const Transfer = () => {
     };
 
     updateConversion();
-  }, [amount, fromCurr, toCurr]); // Monitorização estrita: reage no milissegundo em que o valor ou as moedas mudam
+  }, [amount, fromCurr, toCurr]); // Recalcula instantaneamente sempre que mudas o valor ou os seletores de moeda
 
   const handleFinalizarTransferencia = (e: React.FormEvent) => {
     e.preventDefault();
