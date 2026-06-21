@@ -9,7 +9,7 @@ import { ArrowLeft, Send, ShieldCheck, User, Users, RefreshCw } from "lucide-rea
 const Transfer = () => {
   const navigate = useNavigate();
 
-  // --- LISTAS CONFIGURADAS (Apenas países selecionados e as suas moedas oficiais) ---
+  // --- LISTAS CONFIGURADAS ---
   const countries = [
     "África do Sul",
     "Angola",
@@ -23,17 +23,14 @@ const Transfer = () => {
     "Portugal"
   ].sort((a, b) => a.localeCompare(b, "pt-PT"));
 
-  // Moedas oficiais e exclusivas dos países passados
   const currencies = ["AOA", "BGN", "CDF", "EUR", "MZN", "XAF", "ZAR"];
   const methods = ["Banco", "Carteira Digital"];
 
   // --- ESTADOS DO FORMULÁRIO ---
-  // Ordenante
   const [senderName, setSenderName] = useState("");
   const [senderCountry, setSenderCountry] = useState("Angola");
   const [senderMethod, setSenderMethod] = useState("Banco");
 
-  // Beneficiário
   const [receiverName, setReceiverName] = useState("");
   const [receiverCountry, setReceiverCountry] = useState("Portugal");
   const [receiverMethod, setReceiverMethod] = useState("Banco");
@@ -45,9 +42,10 @@ const Transfer = () => {
   const [fromCurr, setFromCurr] = useState("EUR");
   const [toCurr, setToCurr] = useState("AOA");
 
-  // --- LÓGICA DE CONVERSÃO DINÂMICA VIA API ---
+  // --- LÓGICA DE CONVERSÃO CORRIGIDA E SENSÍVEL A MUDANÇAS ---
   useEffect(() => {
     const updateConversion = async () => {
+      // Se as moedas forem iguais, a taxa é 1 e o resultado é o próprio valor inserido
       if (fromCurr === toCurr) {
         setCurrentRate(1);
         setResult(amount);
@@ -55,34 +53,30 @@ const Transfer = () => {
       }
 
       try {
-        // Força a chamada de conversão para 1 unidade da moeda de envio
+        // Faz a chamada assíncrona à API do teu projeto
         const rateValue = await convert(1, fromCurr, toCurr, false);
         
-        // Validação estrita da taxa vinda da API
         let finalRate = 0;
         if (rateValue && typeof rateValue === 'number' && rateValue > 0) {
           finalRate = rateValue;
         } else {
+          // Fallback seguro usando as tuas taxas internas estabelecidas
           finalRate = getExchangeRate(fromCurr, toCurr, false) || 1;
         }
         
-        console.log(`Câmbio Atualizado: 1 ${fromCurr} = ${finalRate} ${toCurr}`);
-        
         setCurrentRate(finalRate);
-        // Realiza a multiplicação direta e real baseada no input do cliente
         setResult(amount * finalRate);
       } catch (error) {
-        console.error("Erro na conversão de transferência:", error);
+        console.error("Erro no motor de conversão:", error);
         const fallbackRate = getExchangeRate(fromCurr, toCurr, false) || 1;
         setCurrentRate(fallbackRate);
         setResult(amount * fallbackRate);
       }
     };
-    
-    updateConversion();
-  }, [amount, fromCurr, toCurr]); // Reage imediatamente quando alteras o valor ou as moedas
 
-  // --- ENVIO DOS DADOS PARA O WHATSAPP ---
+    updateConversion();
+  }, [amount, fromCurr, toCurr]); // Monitorização estrita: reage no milissegundo em que o valor ou as moedas mudam
+
   const handleFinalizarTransferencia = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -227,7 +221,7 @@ const Transfer = () => {
             </div>
           </Card>
 
-          {/* SECÇÃO 3: VALORES E CONVERSOR COM SELETORES GEOPOLÍTICOS RESTRITOS */}
+          {/* SECÇÃO 3: VALORES E SIMULADOR */}
           <Card className="p-6 md:p-8 bg-white border border-slate-100 shadow-xl rounded-[2rem] space-y-6">
             <div className="flex items-center gap-2 text-[#1a4571] border-b pb-3 border-slate-100">
               <RefreshCw size={20} />
@@ -274,7 +268,7 @@ const Transfer = () => {
                 </div>
               </div>
 
-              {/* Resultado Visual do Câmbio */}
+              {/* Resultado Visual do Câmbio Dinâmico */}
               <div className="bg-[#1a4571] text-white p-6 rounded-2xl flex flex-col justify-between min-h-[140px]">
                 <div>
                   <span className="text-[10px] font-bold text-blue-200 uppercase tracking-widest block mb-1">Total estimado a receber</span>
