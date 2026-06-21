@@ -9,6 +9,24 @@ import { ArrowLeft, Send, ShieldCheck, User, Users, RefreshCw } from "lucide-rea
 const Transfer = () => {
   const navigate = useNavigate();
 
+  // --- MAPEAMENTO GEOPOLÍTICO DE PAÍSES E MOEDAS (API COMPATIBLE) ---
+  const countryData: { [key: string]: string } = {
+    "África do Sul": "ZAR",
+    "Angola": "AOA",
+    "Bélgica": "EUR",
+    "Bulgária": "BGN",
+    "Camarões": "XAF",
+    "Congo Brazzaville": "XAF",
+    "Congo RDC": "CDF",
+    "França": "EUR",
+    "Moçambique": "MZN",
+    "Portugal": "EUR"
+  };
+
+  // Lista de países ordenada alfabeticamente de forma automática
+  const countries = Object.keys(countryData).sort((a, b) => a.localeCompare(b, "pt-PT"));
+  const methods = ["Banco", "Carteira Digital"];
+
   // --- ESTADOS DO FORMULÁRIO ---
   // Ordenante
   const [senderName, setSenderName] = useState("");
@@ -17,38 +35,27 @@ const Transfer = () => {
 
   // Beneficiário
   const [receiverName, setReceiverName] = useState("");
-  const [receiverCountry, setReceiverCountry] = useState("Angola");
+  const [receiverCountry, setReceiverCountry] = useState("Portugal");
   const [receiverMethod, setReceiverMethod] = useState("Banco");
 
   // Conversor e Valores
   const [amount, setAmount] = useState<number>(100);
   const [result, setResult] = useState<number>(0);
   const [currentRate, setCurrentRate] = useState<number>(0);
-  const [fromCurr, setFromCurr] = useState("USD");
-  const [toCurr, setToCurr] = useState("AOA");
 
-  // --- LISTAS CONFIGURADAS ---
-  // Países em Ordem Alfabética
-  const countries = [
-    "Angola",
-    "Bélgica",
-    "Bulgária",
-    "Camarões",
-    "Congo BR",
-    "Congo RDC",
-    "França",
-    "Portugal"
-  ];
+  // Moedas deduzidas automaticamente a partir do país selecionado
+  const fromCurr = countryData[senderCountry] || "USD";
+  const toCurr = countryData[receiverCountry] || "AOA";
 
-  // Moedas Disponíveis
-  const currencies = ["USD", "EUR", "AOA", "USDT"];
-
-  // Métodos de Movimentação
-  const methods = ["Banco", "Carteira Digital"];
-
-  // --- LÓGICA DE CONVERSÃO (API / FALLBACK) ---
+  // --- LÓGICA DE CONVERSÃO DINÂMICA VIA API ---
   useEffect(() => {
     const updateConversion = async () => {
+      if (fromCurr === toCurr) {
+        setCurrentRate(1);
+        setResult(amount);
+        return;
+      }
+
       try {
         const rateValue = await convert(1, fromCurr, toCurr, false);
         const finalRate = rateValue && rateValue > 0 
@@ -65,7 +72,7 @@ const Transfer = () => {
       }
     };
     updateConversion();
-  }, [amount, fromCurr, toCurr]);
+  }, [amount, fromCurr, toCurr, senderCountry, receiverCountry]);
 
   // --- ENVIO DOS DADOS PARA O WHATSAPP ---
   const handleFinalizarTransferencia = (e: React.FormEvent) => {
@@ -76,26 +83,25 @@ const Transfer = () => {
       return;
     }
 
-    // Link direto para o teu operador
     const numeroWhatsapp = "244928669514"; 
     
     const totalFormatado = result.toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const quantiaFormatada = amount.toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-    const mensagem = `🚀 *NOVA SOLICITAÇÃO DE TRANSFERÊNCIA*\n\n` +
+    const mensagem = `🚀 *SOLICITAÇÃO DE TRANSFERÊNCIA INTERNACIONAL*\n\n` +
                      `👤 *ORDENANTE (QUEM ENVIA):*\n` +
                      `• Nome: ${senderName}\n` +
-                     `• País atual: ${senderCountry}\n` +
+                     `• País atual: ${senderCountry} (${fromCurr})\n` +
                      `• Método de envio: ${senderMethod}\n\n` +
                      `🎯 *BENEFICIÁRIO (QUEM RECEBE):*\n` +
                      `• Nome: ${receiverName}\n` +
-                     `• País destino: ${receiverCountry}\n` +
+                     `• País destino: ${receiverCountry} (${toCurr})\n` +
                      `• Método de receção: ${receiverMethod}\n\n` +
                      `💵 *DADOS FINANCEIROS (SIMULAÇÃO):*\n` +
                      `• Envia: ${quantiaFormatada} ${fromCurr}\n` +
                      `• Destino: ${totalFormatado} ${toCurr}\n` +
                      `• Taxa aplicada: 1 ${fromCurr} = ${currentRate} ${toCurr}\n\n` +
-                     `Gostaria de receber os dados de liquidação para prosseguir.`;
+                     `Gostaria de receber os dados de liquidação para prosseguir com a ordem.`;
 
     const urlWhatsapp = `https://wa.me/${numeroWhatsapp}?text=${encodeURIComponent(mensagem)}`;
     window.open(urlWhatsapp, "_blank", "noopener,noreferrer");
@@ -213,11 +219,11 @@ const Transfer = () => {
             </div>
           </Card>
 
-          {/* SECÇÃO 3: VALORES E CONVERSOR INTELIGENTE */}
+          {/* SECÇÃO 3: VALORES E CONVERSOR INTELIGENTE AUTOMÁTICO */}
           <Card className="p-6 md:p-8 bg-white border border-slate-100 shadow-xl rounded-[2rem] space-y-6">
             <div className="flex items-center gap-2 text-[#1a4571] border-b pb-3 border-slate-100">
               <RefreshCw size={20} />
-              <h2 className="text-lg font-black uppercase italic">3. Simulação de Câmbio</h2>
+              <h2 className="text-lg font-black uppercase italic">3. Simulação de Câmbio Automático</h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -232,30 +238,14 @@ const Transfer = () => {
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100 font-bold text-sm">
                   <div>
-                    <label className="text-xs font-bold text-slate-400 block mb-1">Moeda Envio</label>
-                    <select 
-                      value={fromCurr}
-                      onChange={(e) => setFromCurr(e.target.value)}
-                      className="w-full h-12 bg-slate-50 border border-slate-200 rounded-xl px-3 font-black text-sm text-slate-700 outline-none"
-                    >
-                      {currencies.map((curr) => (
-                        <option key={curr} value={curr} className="notranslate" translate="no">{curr}</option>
-                      ))}
-                    </select>
+                    <span className="text-[10px] uppercase text-slate-400 block mb-1">Moeda Envio</span>
+                    <span className="text-lg font-black text-[#1a4571] notranslate" translate="no">{fromCurr}</span>
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-slate-400 block mb-1">Moeda Destino</label>
-                    <select 
-                      value={toCurr}
-                      onChange={(e) => setToCurr(e.target.value)}
-                      className="w-full h-12 bg-slate-50 border border-slate-200 rounded-xl px-3 font-black text-sm text-slate-700 outline-none"
-                    >
-                      {currencies.map((curr) => (
-                        <option key={curr} value={curr} className="notranslate" translate="no">{curr}</option>
-                      ))}
-                    </select>
+                    <span className="text-[10px] uppercase text-slate-400 block mb-1">Moeda Destino</span>
+                    <span className="text-lg font-black text-[#1a4571] notranslate" translate="no">{toCurr}</span>
                   </div>
                 </div>
               </div>
@@ -279,7 +269,7 @@ const Transfer = () => {
               type="submit"
               className="w-full h-16 bg-green-600 hover:bg-green-700 text-white font-black text-lg rounded-xl transition-all shadow-lg flex items-center justify-center gap-3 group"
             >
-              COMPLETO VÍA WHATSAPP
+              SOLICITAR TRANSFERÊNCIA
               <Send size={20} className="group-hover:translate-x-1 transition-transform" />
             </Button>
           </Card>
