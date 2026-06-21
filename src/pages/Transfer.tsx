@@ -9,22 +9,22 @@ import { ArrowLeft, Send, ShieldCheck, User, Users, RefreshCw } from "lucide-rea
 const Transfer = () => {
   const navigate = useNavigate();
 
-  // --- MAPEAMENTO GEOPOLÍTICO DE PAÍSES E MOEDAS (API COMPATIBLE) ---
-  const countryData: { [key: string]: string } = {
-    "África do Sul": "ZAR",
-    "Angola": "AOA",
-    "Bélgica": "EUR",
-    "Bulgária": "BGN",
-    "Camarões": "XAF",
-    "Congo Brazzaville": "XAF",
-    "Congo RDC": "CDF",
-    "França": "EUR",
-    "Moçambique": "MZN",
-    "Portugal": "EUR"
-  };
+  // --- LISTAS CONFIGURADAS (Apenas países selecionados e as suas moedas oficiais) ---
+  const countries = [
+    "África do Sul",
+    "Angola",
+    "Bélgica",
+    "Bulgária",
+    "Camarões",
+    "Congo Brazzaville",
+    "Congo RDC",
+    "França",
+    "Moçambique",
+    "Portugal"
+  ].sort((a, b) => a.localeCompare(b, "pt-PT"));
 
-  // Lista de países ordenada alfabeticamente de forma automática
-  const countries = Object.keys(countryData).sort((a, b) => a.localeCompare(b, "pt-PT"));
+  // Moedas oficiais e exclusivas dos países passados
+  const currencies = ["AOA", "BGN", "CDF", "EUR", "MZN", "XAF", "ZAR"];
   const methods = ["Banco", "Carteira Digital"];
 
   // --- ESTADOS DO FORMULÁRIO ---
@@ -38,14 +38,12 @@ const Transfer = () => {
   const [receiverCountry, setReceiverCountry] = useState("Portugal");
   const [receiverMethod, setReceiverMethod] = useState("Banco");
 
-  // Conversor e Valores
+  // Conversor e Valores (fromCurr e toCurr agora controlam o select diretamente)
   const [amount, setAmount] = useState<number>(100);
   const [result, setResult] = useState<number>(0);
   const [currentRate, setCurrentRate] = useState<number>(0);
-
-  // Moedas deduzidas automaticamente a partir do país selecionado
-  const fromCurr = countryData[senderCountry] || "USD";
-  const toCurr = countryData[receiverCountry] || "AOA";
+  const [fromCurr, setFromCurr] = useState("EUR");
+  const [toCurr, setToCurr] = useState("AOA");
 
   // --- LÓGICA DE CONVERSÃO DINÂMICA VIA API ---
   useEffect(() => {
@@ -72,7 +70,7 @@ const Transfer = () => {
       }
     };
     updateConversion();
-  }, [amount, fromCurr, toCurr, senderCountry, receiverCountry]);
+  }, [amount, fromCurr, toCurr]); // Reage na hora quando alteras as moedas no seletor inferior
 
   // --- ENVIO DOS DADOS PARA O WHATSAPP ---
   const handleFinalizarTransferencia = (e: React.FormEvent) => {
@@ -88,14 +86,14 @@ const Transfer = () => {
     const totalFormatado = result.toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const quantiaFormatada = amount.toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-    const mensagem = `🚀 *SOLICITAÇÃO DE TRANSFERÊNCIA INTERNACIONAL*\n\n` +
+    const mensaje = `🚀 *SOLICITAÇÃO DE TRANSFERÊNCIA INTERNACIONAL*\n\n` +
                      `👤 *ORDENANTE (QUEM ENVIA):*\n` +
                      `• Nome: ${senderName}\n` +
-                     `• País atual: ${senderCountry} (${fromCurr})\n` +
+                     `• País atual: ${senderCountry}\n` +
                      `• Método de envio: ${senderMethod}\n\n` +
                      `🎯 *BENEFICIÁRIO (QUEM RECEBE):*\n` +
                      `• Nome: ${receiverName}\n` +
-                     `• País destino: ${receiverCountry} (${toCurr})\n` +
+                     `• País destino: ${receiverCountry}\n` +
                      `• Método de receção: ${receiverMethod}\n\n` +
                      `💵 *DADOS FINANCEIROS (SIMULAÇÃO):*\n` +
                      `• Envia: ${quantiaFormatada} ${fromCurr}\n` +
@@ -103,7 +101,7 @@ const Transfer = () => {
                      `• Taxa aplicada: 1 ${fromCurr} = ${currentRate} ${toCurr}\n\n` +
                      `Gostaria de receber os dados de liquidação para prosseguir com a ordem.`;
 
-    const urlWhatsapp = `https://wa.me/${numeroWhatsapp}?text=${encodeURIComponent(mensagem)}`;
+    const urlWhatsapp = `https://wa.me/${numeroWhatsapp}?text=${encodeURIComponent(mensaje)}`;
     window.open(urlWhatsapp, "_blank", "noopener,noreferrer");
   };
 
@@ -184,7 +182,7 @@ const Transfer = () => {
                   required
                   placeholder="Ex: Hamilton Silva"
                   value={receiverName}
-                  onChange={(e) => setReceiverName(e.target.value)}
+                  onChange={(e) => setResult(amount * currentRate) || setReceiverName(e.target.value)}
                   className="h-12 border-slate-200 focus:border-[#1a4571] rounded-xl"
                 />
               </div>
@@ -219,11 +217,11 @@ const Transfer = () => {
             </div>
           </Card>
 
-          {/* SECÇÃO 3: VALORES E CONVERSOR INTELIGENTE AUTOMÁTICO */}
+          {/* SECÇÃO 3: VALORES E CONVERSOR COM SELETORES GEOPOLÍTICOS RESTRITOS */}
           <Card className="p-6 md:p-8 bg-white border border-slate-100 shadow-xl rounded-[2rem] space-y-6">
             <div className="flex items-center gap-2 text-[#1a4571] border-b pb-3 border-slate-100">
               <RefreshCw size={20} />
-              <h2 className="text-lg font-black uppercase italic">3. Simulação de Câmbio Automático</h2>
+              <h2 className="text-lg font-black uppercase italic">3. Simulação de Câmbio</h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -238,14 +236,30 @@ const Transfer = () => {
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100 font-bold text-sm">
+                <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <span className="text-[10px] uppercase text-slate-400 block mb-1">Moeda Envio</span>
-                    <span className="text-lg font-black text-[#1a4571] notranslate" translate="no">{fromCurr}</span>
+                    <label className="text-xs font-bold text-slate-400 block mb-1">Moeda Envio</label>
+                    <select 
+                      value={fromCurr}
+                      onChange={(e) => setFromCurr(e.target.value)}
+                      className="w-full h-12 bg-slate-50 border border-slate-200 rounded-xl px-3 font-black text-sm text-slate-700 outline-none"
+                    >
+                      {currencies.map((curr) => (
+                        <option key={curr} value={curr} className="notranslate" translate="no">{curr}</option>
+                      ))}
+                    </select>
                   </div>
                   <div>
-                    <span className="text-[10px] uppercase text-slate-400 block mb-1">Moeda Destino</span>
-                    <span className="text-lg font-black text-[#1a4571] notranslate" translate="no">{toCurr}</span>
+                    <label className="text-xs font-bold text-slate-400 block mb-1">Moeda Destino</label>
+                    <select 
+                      value={toCurr}
+                      onChange={(e) => setToCurr(e.target.value)}
+                      className="w-full h-12 bg-slate-50 border border-slate-200 rounded-xl px-3 font-black text-sm text-slate-700 outline-none"
+                    >
+                      {currencies.map((curr) => (
+                        <option key={curr} value={curr} className="notranslate" translate="no">{curr}</option>
+                      ))}
+                    </select>
                   </div>
                 </div>
               </div>
