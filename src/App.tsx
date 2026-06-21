@@ -17,6 +17,7 @@ import Sell from "./pages/Sell";
 import Services from "./pages/Services"; 
 import Support from "./pages/Support"; 
 import Convert from "./pages/Convert";
+import Transfer from "./pages/Transfer"; // INJETADO: Nova página de transferências
 import NotFound from "./pages/NotFound";
 
 // Páginas de Acesso e Gestão
@@ -66,6 +67,7 @@ export default function App() {
                 <Route path="/sell" element={<Sell />} /> 
                 <Route path="/services" element={<Services />} /> 
                 <Route path="/support" element={<Support />} /> 
+                <Route path="/transfer" element={<Transfer />} /> {/* INJETADO: Rota do formulário de transferências */}
 
                 {/* Fluxo de Checkout dinâmico */}
                 <Route path="/convert/:from/:to/:type" element={<Convert />} />

@@ -8,7 +8,8 @@ import {
   ArrowRight,
   Store,
   Wallet,
-  MessageSquare
+  MessageSquare,
+  Send
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
@@ -36,12 +37,20 @@ const Services = () => {
       color: "hover:border-emerald-500"
     },
     {
+      title: "Transferências Internacionais",
+      description: "Envie e receba valores entre vários países de forma simples. Preencha os dados do ordenante, beneficiário e simule o câmbio antes de enviar.",
+      icon: <Send className="w-8 h-8 text-indigo-500" />,
+      actionType: "route",
+      path: "/transfer",
+      color: "hover:border-indigo-500",
+      isNew: true
+    },
+    {
       title: "Criação de Carteiras Digitais",
       description: "Abertura e verificação segura de contas globais (Wise, RedotPay, Bybit ou Binance). Ideal para quem quer começar a operar sem entraves.",
       icon: <Wallet className="w-8 h-8 text-amber-500" />,
       actionType: "chat",
-      color: "hover:border-amber-500",
-      isNew: true
+      color: "hover:border-amber-500"
     },
     {
       title: "Pagamentos Internacionais",
@@ -123,7 +132,7 @@ const Services = () => {
                 
                 {service.actionType === "route" && (
                   <div className="mt-8 flex items-center text-[#1a4571] font-black text-xs uppercase tracking-wider gap-2 group-hover:gap-4 transition-all">
-                    ACESSAR SIMULADOR <ArrowRight size={16} />
+                    ACESSAR FORMULÁRIO <ArrowRight size={16} />
                   </div>
                 )}
 
