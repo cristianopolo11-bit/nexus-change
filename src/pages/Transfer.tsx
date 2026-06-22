@@ -28,12 +28,10 @@ const Transfer = () => {
   const methods = ["Banco", "Carteira Digital"];
 
   // --- ESTADOS DO FORMULÁRIO ---
-  // Ordenante
   const [senderName, setSenderName] = useState("");
   const [senderCountry, setSenderCountry] = useState("Angola");
   const [senderMethod, setSenderMethod] = useState("Banco");
 
-  // Beneficiário
   const [receiverName, setReceiverName] = useState("");
   const [receiverCountry, setReceiverCountry] = useState("Portugal");
   const [receiverMethod, setReceiverMethod] = useState("Banco");
@@ -58,7 +56,7 @@ const Transfer = () => {
     }
   }, [receiverCountry]);
 
-  // --- LÓGICA DE CONVERSÃO REAL VIA API ---
+  // --- LÓGICA DE CONVERSÃO EXATA E BLINDADA ---
   useEffect(() => {
     const updateConversion = async () => {
       if (fromCurr === toCurr) {
@@ -68,23 +66,24 @@ const Transfer = () => {
       }
 
       try {
-        // Pedido assíncrono para obter o câmbio de 1 unidade em tempo real da API
         const rateValue = await convert(1, fromCurr, toCurr, false);
         
         let finalRate = 0;
         if (rateValue && typeof rateValue === 'number' && rateValue > 0) {
           finalRate = rateValue;
         } else {
-          // Fallback seguro usando as taxas internas locais se a API falhar
           finalRate = getExchangeRate(fromCurr, toCurr, false) || 1;
         }
-        
-        console.log(`[Nexus API] 1 ${fromCurr} = ${finalRate} ${toCurr}`);
-        
+
+        // Correção de Inversão da API: Se a taxa for de XAF para AOA e vier menor que 1 por engano
+        if (fromCurr === "XAF" && toCurr === "AOA" && finalRate < 1) {
+          finalRate = 1 / finalRate;
+        }
+
         setCurrentRate(finalRate);
         setResult(amount * finalRate);
       } catch (error) {
-        console.error("Erro no motor de conversão Nexus:", error);
+        console.error("Erro no motor de conversão:", error);
         const fallbackRate = getExchangeRate(fromCurr, toCurr, false) || 1;
         setCurrentRate(fallbackRate);
         setResult(amount * fallbackRate);
@@ -92,7 +91,7 @@ const Transfer = () => {
     };
 
     updateConversion();
-  }, [amount, fromCurr, toCurr]); // Recalcula instantaneamente sempre que mudas o valor ou os seletores de moeda
+  }, [amount, fromCurr, toCurr]);
 
   const handleFinalizarTransferencia = (e: React.FormEvent) => {
     e.preventDefault();
@@ -119,7 +118,7 @@ const Transfer = () => {
                      `💵 *DADOS FINANCEIROS (SIMULAÇÃO):*\n` +
                      `• Envia: ${quantiaFormatada} ${fromCurr}\n` +
                      `• Destino: ${totalFormatado} ${toCurr}\n` +
-                     `• Taxa aplicada: 1 ${fromCurr} = ${currentRate} ${toCurr}\n\n` +
+                     `• Taxa aplicada: 1 ${fromCurr} = ${currentRate.toLocaleString('pt-PT', { maximumFractionDigits: 5 })} ${toCurr}\n\n` +
                      `Gostaria de receber os dados de liquidação para prosseguir com a ordem.`;
 
     const urlWhatsapp = `https://wa.me/${numeroWhatsapp}?text=${encodeURIComponent(mensagem)}`;
@@ -285,7 +284,7 @@ const Transfer = () => {
                 </div>
               </div>
 
-              {/* Resultado Visual do Câmbio Dinâmico */}
+              {/* Resultado Visual do Câmbio Dinâmico Protegido */}
               <div className="bg-[#1a4571] text-white p-6 rounded-2xl flex flex-col justify-between min-h-[140px]">
                 <div>
                   <span className="text-[10px] font-bold text-blue-200 uppercase tracking-widest block mb-1">Total estimado a receber</span>
@@ -294,7 +293,7 @@ const Transfer = () => {
                   </div>
                 </div>
                 <div className="text-[11px] text-blue-200 font-medium border-t border-blue-800/60 pt-2 flex justify-between">
-                  <span className="notranslate" translate="no">Taxa: 1 {fromCurr} = {currentRate} {toCurr}</span>
+                  <span className="notranslate" translate="no">Taxa: 1 {fromCurr} = {currentRate.toLocaleString('pt-PT', { maximumFractionDigits: 5 })} {toCurr}</span>
                   <ShieldCheck size={14} className="text-emerald-400" />
                 </div>
               </div>
