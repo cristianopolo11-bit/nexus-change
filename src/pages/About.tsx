@@ -1,11 +1,27 @@
 import React from "react";
-import { Globe, Zap, Target, ShieldCheck } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Globe, Zap, Target, ShieldCheck, ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const About = () => {
+  const navigate = useNavigate();
+
   return (
-    <div className="min-h-screen bg-slate-50 pb-20 text-left">
+    <div className="min-h-screen bg-slate-50 pb-20 text-left relative">
       {/* HEADER CORPORATIVO UNIFICADO */}
-      <header className="bg-[#1a4571] py-16 px-6 text-center text-white">
+      <header className="bg-[#1a4571] py-16 px-6 text-center text-white relative">
+        <div className="absolute top-4 left-4 sm:top-6 sm:left-6">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate("/")}
+            className="rounded-full bg-white/10 hover:bg-amber-400 hover:text-[#1a4571] text-white border border-white/20 transition-all duration-300 hover:scale-110 shadow-lg"
+            aria-label="Regressar à página inicial"
+          >
+            <ArrowLeft size={22} />
+          </Button>
+        </div>
+
         <h1 className="text-4xl font-black uppercase italic tracking-tighter mb-4">
           Sobre a Nexus Change
         </h1>
@@ -18,11 +34,11 @@ const About = () => {
         {/* MANIFESTO PRINCIPAL COM ANIMAÇÃO */}
         <section 
           data-aos="fade-up"
-          className="bg-white p-8 md:p-12 border-none shadow-[0_20px_50px_rgba(0,0,0,0.08)] bg-white rounded-[2rem] space-y-4 mb-8"
+          className="bg-white p-8 md:p-12 border-none shadow-[0_20px_50px_rgba(0,0,0,0.08)] rounded-[2rem] space-y-4 mb-8"
         >
           <h2 className="text-2xl font-black text-[#1a4571] uppercase italic tracking-tight">Quem Somos</h2>
           <p className="text-slate-600 leading-relaxed font-medium text-sm md:text-base">
-            A <strong>Nexus Change</strong> nasceu da necessidade de modernizar, desburocratizar e trazer transparência total ao mercado de intermediação cambial e pagamentos em <strong>Angola</strong>. Somos mais do que um simples simulador de taxas; atuamos como o elo tecnológico seguro entre as suas necessidades locais e as maiores plataformas do ecossistema financeiro internacional.
+            A <strong>Nexus Change</strong> nasceu da necessidade de modernizar, desburocratizar e trazer transparência total ao mercado de intermediação cambial e pagamentos <strong>internacionais</strong>. Somos mais do que um simples simulador de taxas; atuamos como o elo tecnológico seguro entre as suas necessidades financeiras e as maiores plataformas do ecossistema financeiro internacional.
           </p>
           <p className="text-slate-600 leading-relaxed font-medium text-sm md:text-base">
             Através de uma infraestrutura digital robusta e de um atendimento humanizado de alto padrão, garantimos que qualquer indivíduo ou empresa possa operar globalmente com liquidez imediata, segurança regulada e total sigilo operacional.
@@ -43,7 +59,7 @@ const About = () => {
             <div>
               <h3 className="font-black text-[#1a4571] uppercase italic text-sm mb-1">Nossa Missão</h3>
               <p className="text-slate-500 text-xs font-medium leading-relaxed">
-                Prover soluções tecnológicas simplificadas de câmbio e pagamentos, permitindo que qualquer utilizador tenha acesso a cotações em tempo real e consiga transacionar com o exterior de forma descomplicada.
+                Prover soluções tecnológicas simplificadas de câmbio e pagamentos, permitindo que qualquer utilizador tenha acesso a cotações in real-time e consiga transacionar com o exterior de forma descomplicada.
               </p>
             </div>
           </div>
@@ -59,12 +75,12 @@ const About = () => {
             <div>
               <h3 className="font-black text-[#1a4571] uppercase italic text-sm mb-1">Abrangência Digital</h3>
               <p className="text-slate-500 text-xs font-medium leading-relaxed">
-                Garantir que a ponte financeira chegue a quem precisa através da ferramenta mais acessível: o telemóvel. Operamos de forma descentralizada para cobrir as necessidades do mercado local com máxima flexibilidade.
+                Garantir que a ponte financeira chegue a quem precisa através da ferramenta mais acessível: o telemóvel. Operamos de forma descentralizada para cobrir as necessidades do mercado <strong>global</strong> com máxima flexibilidade.
               </p>
             </div>
           </div>
 
-          {/* Diferencial/Tecnologia unificada com o Tawk.to */}
+          {/* Diferencial/Tecnologia unificada */}
           <div 
             data-aos="fade-up"
             className="flex gap-4 p-6 rounded-2xl bg-white border border-slate-100 shadow-md transition-all duration-300 hover:translate-y-[-2px]"
@@ -101,7 +117,7 @@ const About = () => {
         {/* RODAPÉ DO ABOUT COM ANIMAÇÃO */}
         <div data-aos="fade-up" className="mt-16 pt-8 border-t border-slate-200 text-center space-y-1">
           <p className="text-slate-500 text-sm font-black italic uppercase tracking-tight">
-            Nexus Change — Soluções Inteligentes para Angola
+            Nexus Change — Soluções Inteligentes à Escala Global
           </p>
           <p className="text-slate-400 text-[10px] uppercase tracking-widest font-black">
             Plataforma de Atendimento 100% Digital e Segura

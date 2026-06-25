@@ -1,7 +1,10 @@
 import React, { useState } from "react";
-import { HelpCircle, ChevronDown, ChevronUp, ShieldCheck, MessageSquare } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { HelpCircle, ChevronDown, ChevronUp, ShieldCheck, MessageSquare, ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const FAQ = () => {
+  const navigate = useNavigate();
   // Estado que guarda o índice da pergunta aberta (ou null se estiverem todas fechadas)
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
@@ -13,27 +16,27 @@ const FAQ = () => {
   const faqs = [
     {
       question: "Como funciona a simulação e o fecho da operação?",
-      answer: "O nosso simulador na página inicial dá-te uma cotação estimada em tempo real com base nas taxas atuais de Angola. Para fechar o negócio, basta clicares nos botões de compra ou venda. O nosso chat privado e encriptado (Tawk.to) abre instantaneamente, conectando-te a um operador em serviço que validará os dados e guiará a liquidação."
+      answer: "O nosso simulador na página inicial dá-te uma cotação estimada em tempo real com base nas taxas de mercado globais atuais. Para fechar o negócio, basta clicares nos botões de compra ou venda. O nosso canal de atendimento abre instantaneamente, conectando-te a um operador em serviço que validará os dados e guiará a liquidação."
     },
     {
-      question: "Quais são os métodos de pagamento aceites em Angola?",
-      answer: "Para recebermos o teu valor em Kwanzas (AOA), aceitamos transferências bancárias via IBAN (qualquer banco angolano) ou pagamentos imediatos por Multicaixa Express. Assim que o comprovativo for validado pelo operador no chat, a tua divisa é enviada."
+      question: "Quais são os métodos de pagamento aceites?",
+      answer: "Para processarmos a tua transação, aceitamos transferências bancárias locais via identificação bancária padrão ou métodos de pagamento imediatos integrados na tua região. Assim que o comprovativo for validado pelo operador no chat, o teu saldo internacional é enviado."
     },
     {
-      question: "Quanto tempo demora o processamento das divisas?",
-      answer: "Operações digitais comuns (como envio de USDT, USDC ou recarga de cartões digitais como RedotPay e Bybit) são quase instantâneas, demorando entre 5 a 15 minutos após a confirmação do Kwanza. Transferências bancárias internacionais (como Wise ou contas na Europa) dependem dos prazos dos bancos, mas são iniciadas imediatamente pelo operador."
+      question: "Quanto tempo demora o processamento dos ativos?",
+      answer: "Operações digitais comuns (como envio de USDT, USDC ou recarga de cartões digitais globais) são quase instantâneas, demorando entre 5 a 15 minutos após a confirmação do pagamento local. Transferências bancárias internacionais dependem dos prazos dos bancos correspondentes, mas são iniciadas imediatamente pelo operador."
     },
     {
-      question: "Preciso de ter uma conta bancária no exterior para usar a Nexus Change?",
-      answer: "Não! Esse é o nosso maior diferencial. Se queres comprar na Amazon, Alibaba, pagar uma subscrição ou carregar uma carteira digital e só tens Kwanzas, nós fazemos o pagamento por ti a partir das nossas contas internacionais associadas. Tu pagas-nos em Kwanzas e nós resolvemos o resto."
+      question: "Preciso de ter uma conta bancária internacional própria para usar a plataforma?",
+      answer: "Não! Esse é o nosso maior diferencial. Se queres efetuar uma compra online, pagar uma subscrição ou carregar uma carteira digital e apenas tens acesso aos teus métodos de pagamento locais, nós fazemos o pagamento por ti a partir das nossas contas internacionais associadas. Tu liquidas localmente e nós resolvemos o resto globalmente."
     },
     {
-      question: "A Nexus Change cobra alguma taxa oculta?",
-      answer: "Nenhuma. O valor que vês no resultado da simulação ou que é acordado expressamente com o operador no chat é o valor final que vais pagar. O nosso spread (lucro comercial) já está incluído na cotação exibida, garantindo total transparência matemática."
+      question: "A plataforma cobra alguma taxa oculta?",
+      answer: "Nenhuma. O valor que vês no resultado da simulação ou que é acordado expressamente com o operador no chat é o valor final que vais pagar. O nosso spread comercial já está incluído na cotação exibida, garantindo total transparência matemática."
     },
     {
       question: "Como funcionam os futuros Agentes Físicos?",
-      answer: "Estamos a expandir a nossa infraestrutura tecnológica. Em breve, anunciaremos pontos de atendimento físicos em lojas parceiras estrategicamente localizadas por todo o território nacional. Isso permitirá que clientes analógicos façam trocas, tirem dúvidas ou entreguem valores presencialmente com total segurança."
+      answer: "Estamos a expandir a nossa infraestrutura tecnológica. Em breve, anunciaremos pontos de atendimento físicos em lojas parceiras estrategicamente localizadas em várias regiões. Isso permitirá que clientes façam trocas, tirem dúvidas ou entreguem valores presencialmente com total segurança corporativa."
     }
   ];
 
@@ -46,9 +49,22 @@ const FAQ = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-20 text-left">
-      {/* HEADER CORPORATIVO UNIFICADO */}
-      <header className="bg-[#1a4571] py-16 px-6 text-center text-white">
+    <div className="min-h-screen bg-slate-50 pb-20 text-left relative">
+      
+      {/* HEADER CORPORATIVO UNIFICADO COM BOTÃO REGRESSAR */}
+      <header className="bg-[#1a4571] py-16 px-6 text-center text-white relative">
+        <div className="absolute top-4 left-4 sm:top-6 sm:left-6">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate("/")}
+            className="rounded-full bg-white/10 hover:bg-amber-400 hover:text-[#1a4571] text-white border border-white/20 transition-all duration-300 hover:scale-110 shadow-lg"
+            aria-label="Regressar à página inicial"
+          >
+            <ArrowLeft size={22} />
+          </Button>
+        </div>
+
         <h1 className="text-4xl font-black uppercase italic tracking-tighter mb-4">
           Perguntas Frequentes (FAQ)
         </h1>
@@ -83,7 +99,7 @@ const FAQ = () => {
 
               {/* Bloco de Resposta Ativo de forma limpa */}
               {openIndex === index && (
-                <div className="px-6 pb-6 pt-2 text-slate-600 font-medium text-xs md:text-sm leading-relaxed border-t border-slate-50 bg-slate-50/30 transition-all duration-300">
+                <div className="px-6 pb-6 pt-2 text-slate-600 font-medium text-xs md:text-sm leading-relaxed border-t border-slate-50 bg-slate-50/30 transition-all duration-300 text-left">
                   <p>{faq.answer}</p>
                 </div>
               )}

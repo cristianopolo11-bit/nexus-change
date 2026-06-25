@@ -28,7 +28,7 @@ const Terms = () => {
           </div>
 
           <p className="text-sm md:text-base">
-            Bem-vindo à <strong>Nexus Change</strong>. Ao aceder a este portal e utilizar as nossas ferramentas de simulação inteligente para o mercado cambial de <strong>Angola</strong>, o utilizador declara estar ciente e aceitar integralmente os presentes Termos e Condições de Uso.
+            Bem-vindo à <strong>Nexus Change</strong>. Ao aceder a este portal e utilizar as nossas ferramentas de simulação inteligente para o mercado cambial <strong>global</strong>, o utilizador declara estar ciente e aceitar integralmente os presentes Termos e Condições de Uso.
           </p>
 
           {/* Diretriz 1 */}
@@ -42,7 +42,7 @@ const Terms = () => {
             <ul className="list-disc pl-5 space-y-2 text-slate-500 text-xs">
               <li><strong className="text-slate-600">Simulador Dinâmico:</strong> As taxas de câmbio apresentadas no portal servem como referência de mercado em tempo real. O valor exato e definitivo da operação será fixado apenas no momento da negociação direta com o operador.</li>
               <li><strong className="text-slate-600">Fecho de Operações:</strong> Este website funciona como uma interface de preparação, simulação e triagem. Nenhuma transferência financeira ou liquidação automática ocorre neste domínio; todas as transações são concluídas de forma humana, privada e segura através do nosso canal de atendimento assistido.</li>
-              <li><strong className="text-slate-600">Disponibilidade de Liquidez:</strong> A execução das ordens de compra e venda de divisas ou serviços está estritamente condicionada aos limites de stock e liquidez da plataforma no momento da validação pelo operador.</li>
+              <li><strong className="text-slate-600">Disponibilidade de Liquidez:</strong> A execução das ordens de compra e venda de divisas ou serviços está estritamente condicionada aos limites de liquidez da plataforma no momento da validação pelo operador.</li>
             </ul>
           </div>
 
@@ -52,7 +52,7 @@ const Terms = () => {
               <ShieldCheck size={18} className="text-emerald-500" /> Responsabilidades do Utilizador
             </h3>
             <p>
-              Ao utilizar as ferramentas da nossa plataforma em território nacional, o utilizador assume e declara que:
+              Ao utilizar as ferramentas da nossa plataforma na <strong>sua região</strong>, o utilizador assume e declara que:
             </p>
             <ul className="list-disc pl-5 space-y-2 text-slate-500 text-xs">
               <li>Todos os montantes introduzidos e dados simulados refletem uma intenção operacional verídica e legítima.</li>
@@ -67,7 +67,7 @@ const Terms = () => {
               <Scale size={18} /> Propriedade Intelectual e Uso de Marca
             </h3>
             <p>
-              Todo o material digital incorporado na Nexus Change — incluindo a arquitetura do simulador, identidade visual, logótipos e códigos estruturais — é propriedade exclusiva do projeto. Qualquer reprodução, cópia ou engenharia reversa não autorizada para fins comerciais em Angola está sujeita a medidas legais protetivas.
+              Todo o material digital incorporado na Nexus Change — incluindo a arquitetura do simulador, identidade visual, logótipos e códigos estruturais — é propriedade exclusiva do projeto. Qualquer reprodução, cópia ou engenharia reversa não autorizada para fins comerciais em <strong>âmbito internacional</strong> está sujeita a medidas legais protetivas.
             </p>
           </div>
 
