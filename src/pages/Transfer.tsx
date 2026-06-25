@@ -74,28 +74,28 @@ const CountrySelect = ({ value, onChange, label }: CountrySelectProps) => {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="w-full h-13 bg-white border-2 border-amber-200 rounded-xl px-3 flex items-center justify-between font-bold text-sm text-slate-700 outline-none focus:border-amber-400 transition-all shadow-sm hover:bg-amber-50/30"
+        className="w-full h-12 bg-white border-2 border-amber-200 rounded-xl px-3 flex items-center justify-between font-bold text-xs sm:text-sm text-slate-700 outline-none focus:border-amber-400 transition-all shadow-sm hover:bg-amber-50/30"
       >
-        <div className="flex items-center gap-2">
-          <span className="text-lg leading-none">{COUNTRY_FLAGS[value]}</span>
-          <span>{value}</span>
+        <div className="flex items-center gap-1.5 truncate">
+          <span className="text-base leading-none shrink-0">{COUNTRY_FLAGS[value]}</span>
+          <span className="truncate">{value}</span>
         </div>
-        <ChevronDown size={16} className={`text-slate-400 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+        <ChevronDown size={14} className={`text-slate-400 transition-transform duration-200 shrink-0 ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open && (
-        <div className="absolute z-50 mt-1.5 w-full bg-white border-2 border-amber-200 rounded-xl shadow-2xl max-h-56 overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="absolute z-[110] mt-1.5 w-full bg-white border-2 border-amber-200 rounded-xl shadow-2xl max-h-48 overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-200">
           {COUNTRIES.map((country) => (
             <button
               key={country}
               type="button"
               onClick={() => { onChange(country); setOpen(false); }}
-              className={`w-full flex items-center gap-2.5 px-4 py-3 text-sm font-bold transition-colors ${
+              className={`w-full flex items-center gap-2 px-3 py-2.5 text-xs sm:text-sm font-bold transition-colors ${
                 country === value ? "bg-amber-400 text-[#1a4571]" : "text-slate-700 hover:bg-amber-50"
               }`}
             >
-              <span className="text-lg leading-none">{COUNTRY_FLAGS[country]}</span>
-              <span>{country}</span>
+              <span className="text-base leading-none shrink-0">{COUNTRY_FLAGS[country]}</span>
+              <span className="truncate">{country}</span>
             </button>
           ))}
         </div>
@@ -129,20 +129,20 @@ const MethodSelect = ({ value, onChange, label }: MethodSelectProps) => {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="w-full h-13 bg-white border-2 border-amber-200 rounded-xl px-3 flex items-center justify-between font-bold text-sm text-slate-700 outline-none focus:border-amber-400 transition-all shadow-sm hover:bg-amber-50/30"
+        className="w-full h-12 bg-white border-2 border-amber-200 rounded-xl px-3 flex items-center justify-between font-bold text-xs sm:text-sm text-slate-700 outline-none focus:border-amber-400 transition-all shadow-sm hover:bg-amber-50/30"
       >
-        <span>{value}</span>
-        <ChevronDown size={16} className={`text-slate-400 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+        <span className="truncate">{value}</span>
+        <ChevronDown size={14} className={`text-slate-400 transition-transform duration-200 shrink-0 ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open && (
-        <div className="absolute z-50 mt-1.5 w-full bg-white border-2 border-amber-200 rounded-xl shadow-xl overflow-hidden">
+        <div className="absolute z-[110] mt-1.5 w-full bg-white border-2 border-amber-200 rounded-xl shadow-xl overflow-hidden">
           {METHODS.map((method) => (
             <button
               key={method}
               type="button"
               onClick={() => { onChange(method); setOpen(false); }}
-              className={`w-full flex items-center px-4 py-3 text-sm font-bold transition-colors ${
+              className={`w-full flex items-center px-4 py-2.5 text-xs sm:text-sm font-bold transition-colors text-left ${
                 method === value ? "bg-amber-400 text-[#1a4571]" : "text-slate-700 hover:bg-amber-50"
               }`}
             >
@@ -240,45 +240,45 @@ const Transfer = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-amber-50 font-sans text-slate-900 antialiased pb-24 selection:bg-amber-200 selection:text-[#1a4571]">
+    <div className="min-h-screen w-full bg-amber-50 font-sans text-slate-900 antialiased pb-12 sm:pb-24 selection:bg-amber-200 selection:text-[#1a4571]">
       
-      {/* HEADER */}
-      <header className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between border-b-2 border-amber-200 sticky top-0 bg-amber-50/95 backdrop-blur z-50">
-        <div className="flex items-center gap-4">
+      {/* HEADER ADAPTATIVO */}
+      <header className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between gap-3 border-b-2 border-amber-200 sticky top-0 bg-amber-50/95 backdrop-blur z-50">
+        <div className="flex items-center gap-2 sm:gap-4">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => navigate("/services")}
-            className="rounded-full hover:bg-amber-200 transition-all duration-300 hover:scale-110"
+            className="rounded-full hover:bg-amber-200 h-10 w-10 transition-all duration-300 active:scale-95 shrink-0"
             aria-label="Voltar"
           >
-            <ArrowLeft size={22} className="text-[#1a4571]" />
+            <ArrowLeft size={20} className="text-[#1a4571]" />
           </Button>
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-amber-400 rounded-lg flex items-center justify-center shadow-lg">
-              <Globe size={18} className="text-[#1a4571]" />
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="w-8 h-8 bg-amber-400 rounded-lg flex items-center justify-center shadow-lg shrink-0">
+              <Globe size={16} className="text-[#1a4571]" />
             </div>
-            <span className="text-sm font-bold text-[#1a4571] tracking-wider uppercase">
+            <span className="text-xs sm:text-sm font-black text-[#1a4571] tracking-wider uppercase whitespace-nowrap">
               Nexus Remessas
             </span>
           </div>
         </div>
-        <div className="flex items-center gap-2 text-xs font-bold text-[#1a4571] bg-amber-400 px-3 py-1.5 rounded-full shadow-md">
-          <ShieldCheck size={16} />
-          <span>Remessa Certificada</span>
+        <div className="flex items-center gap-1 text-[11px] sm:text-xs font-bold text-[#1a4571] bg-amber-400 px-2.5 py-1.5 rounded-full shadow-md whitespace-nowrap">
+          <ShieldCheck size={14} className="shrink-0" />
+          <span>Certificada</span>
         </div>
       </header>
 
-      {/* ANIMAÇÃO DE ENTRADA SUAVE INTEGRADA NO MAIN */}
-      <main className="max-w-5xl mx-auto px-4 mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+      {/* FLUXO FLEXÍVEL PARA SMARTPHONES */}
+      <main className="max-w-5xl mx-auto px-4 mt-6 sm:mt-8 flex flex-col lg:flex-row gap-6 lg:gap-8 items-start animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
         
         {/* COLUNA ESQUERDA: FORMULÁRIO OPERACIONAL */}
-        <div className="lg:col-span-5 space-y-6 text-left">
-          <div className="space-y-2">
-            <h1 className="text-3xl font-black text-[#1a4571] tracking-tight leading-tight">
+        <div className="w-full lg:w-[42%] space-y-5 sm:space-y-6 text-left">
+          <div className="space-y-1.5">
+            <h1 className="text-2xl sm:text-3xl font-black text-[#1a4571] tracking-tight leading-tight">
               Enviar dinheiro internacionalmente
             </h1>
-            <p className="text-sm text-slate-600 font-medium leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
               Transfira de forma direta e sem burocracias externas. O seu canal de envio direto.
             </p>
           </div>
@@ -286,10 +286,10 @@ const Transfer = () => {
           <form onSubmit={handleFinalizarTransferencia} id="transfer-form" className="space-y-4">
             
             {/* Bloco 1: Ordenante */}
-            <div className="bg-white p-5 rounded-2xl border-2 border-amber-200 shadow-lg space-y-4">
+            <div className="bg-white p-4 sm:p-5 rounded-2xl border-2 border-amber-200 shadow-lg space-y-3.5">
               <div className="flex items-center gap-2 pb-2 border-b border-amber-100">
-                <User size={16} className="text-amber-500" />
-                <span className="text-xs font-black uppercase text-slate-500 tracking-wider">
+                <User size={14} className="text-amber-500 shrink-0" />
+                <span className="text-[10px] sm:text-xs font-black uppercase text-slate-500 tracking-wider">
                   1. Quem Envia (Ordenante)
                 </span>
               </div>
@@ -299,19 +299,19 @@ const Transfer = () => {
                 placeholder="Nome completo do remetente"
                 value={senderName}
                 onChange={(e) => setSenderName(e.target.value)}
-                className="bg-amber-50/60 h-13 rounded-xl border-2 border-amber-200 focus-visible:ring-4 focus-visible:ring-amber-300 font-bold text-base"
+                className="bg-amber-50/60 h-12 rounded-xl border-2 border-amber-200 focus-visible:ring-4 focus-visible:ring-amber-300 font-bold text-sm sm:text-base"
               />
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <CountrySelect value={senderCountry} onChange={setSenderCountry} label="País de Origem" />
                 <MethodSelect value={senderMethod} onChange={setSenderMethod} label="Método de Envio" />
               </div>
             </div>
 
             {/* Bloco 2: Beneficiário */}
-            <div className="bg-white p-5 rounded-2xl border-2 border-amber-200 shadow-lg space-y-4">
+            <div className="bg-white p-4 sm:p-5 rounded-2xl border-2 border-amber-200 shadow-lg space-y-3.5">
               <div className="flex items-center gap-2 pb-2 border-b border-amber-100">
-                <Landmark size={16} className="text-amber-500" />
-                <span className="text-xs font-black uppercase text-slate-500 tracking-wider">
+                <Landmark size={14} className="text-amber-500 shrink-0" />
+                <span className="text-[10px] sm:text-xs font-black uppercase text-slate-500 tracking-wider">
                   2. Quem Recebe (Beneficiário)
                 </span>
               </div>
@@ -321,9 +321,9 @@ const Transfer = () => {
                 placeholder="Nome completo do beneficiário"
                 value={receiverName}
                 onChange={(e) => setReceiverName(e.target.value)}
-                className="bg-amber-50/60 h-13 rounded-xl border-2 border-amber-200 focus-visible:ring-4 focus-visible:ring-amber-300 font-bold text-base"
+                className="bg-amber-50/60 h-12 rounded-xl border-2 border-amber-200 focus-visible:ring-4 focus-visible:ring-amber-300 font-bold text-sm sm:text-base"
               />
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <CountrySelect value={receiverCountry} onChange={setReceiverCountry} label="País de Destino" />
                 <MethodSelect value={receiverMethod} onChange={setReceiverMethod} label="Método de Receção" />
               </div>
@@ -332,103 +332,106 @@ const Transfer = () => {
         </div>
 
         {/* COLUNA DIREITA: SIMULADOR PREMIUM REMESSA */}
-        <div className="lg:col-span-7 w-full">
-          <div className="bg-white rounded-[2rem] border-4 border-amber-400 shadow-2xl p-6 space-y-6 relative overflow-hidden">
-            <div className="absolute -top-20 -right-20 w-40 h-40 bg-amber-200 rounded-full opacity-50 blur-3xl" />
-            <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-amber-300 rounded-full opacity-30 blur-3xl" />
+        <div className="w-full lg:flex-1">
+          <div className="bg-white rounded-[2rem] border-4 border-amber-400 shadow-2xl p-4 sm:p-6 space-y-5 sm:space-y-6 relative overflow-hidden">
+            <div className="absolute -top-20 -right-20 w-40 h-40 bg-amber-200 rounded-full opacity-50 blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-amber-300 rounded-full opacity-30 blur-3xl pointer-events-none" />
 
-            <div className="relative flex items-center justify-between">
+            <div className="relative flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <div className="w-10 h-10 bg-amber-400 rounded-xl flex items-center justify-center shadow-lg">
-                  <ArrowRightLeft size={20} className="text-[#1a4571]" />
+                <div className="w-9 h-9 bg-amber-400 rounded-xl flex items-center justify-center shadow-lg shrink-0">
+                  <ArrowRightLeft size={18} className="text-[#1a4571]" />
                 </div>
                 <div className="text-left">
-                  <h2 className="text-lg font-black text-[#1a4571]">Simulador de Envio</h2>
-                  <p className="text-xs text-slate-500 font-medium flex items-center gap-1">
-                    <Clock size={12} /> Liquidação segura sem intermediação oculta.
+                  <h2 className="text-base sm:text-lg font-black text-[#1a4571]">Simulador de Envio</h2>
+                  <p className="text-[11px] text-slate-500 font-medium flex items-center gap-1">
+                    <Clock size={11} className="shrink-0" />
+                    <span>Liquidação sem taxas ocultas.</span>
                   </p>
                 </div>
               </div>
             </div>
 
             {/* Caixa: Valor de Envio */}
-            <div className={`bg-amber-50 rounded-2xl p-5 border-2 border-amber-200 flex items-center justify-between transition-all duration-300 ${inputFocused ? "ring-4 ring-amber-300 border-amber-400 shadow-lg" : "shadow-md"}`}>
-              <div className="flex flex-col text-left w-full">
-                <label htmlFor="send-amount" className="text-xs font-black text-amber-600 uppercase tracking-wider flex items-center gap-1">
-                  <TrendingDown size={14} /> Tu envias
+            <div className="bg-amber-50 rounded-2xl p-4 border-2 border-amber-200 flex items-center justify-between gap-3 shadow-md">
+              <div className="flex flex-col text-left w-full min-w-0">
+                <label htmlFor="send-amount" className="text-[11px] font-black text-amber-600 uppercase tracking-wider flex items-center gap-1">
+                  <TrendingDown size={12} /> Tu envias
                 </label>
                 <input
                   id="send-amount"
                   type="number"
                   min="0"
                   step="0.01"
-                  value={amount}
+                  value={amount || ""}
                   onChange={(e) => { const val = parseFloat(e.target.value); if (!isNaN(val) && val >= 0) setAmount(val); }}
                   onFocus={() => setInputFocused(true)}
                   onBlur={() => setInputFocused(false)}
-                  className="bg-transparent text-3xl font-black text-[#1a4571] outline-none w-full mt-2 placeholder:text-amber-300"
+                  className="bg-transparent text-2xl sm:text-3xl font-black text-[#1a4571] outline-none w-full mt-1.5 placeholder:text-amber-300 min-w-0"
+                  placeholder="0"
                 />
               </div>
-              <div className="bg-white border-2 border-amber-200 text-[#1a4571] font-black px-4 py-2.5 rounded-xl shadow-md text-lg min-w-[110px] text-center">
+              <div className="bg-white border-2 border-amber-200 text-[#1a4571] font-black px-3.5 py-2 rounded-xl shadow-md text-sm sm:text-lg shrink-0 min-w-[85px] text-center">
                 {fromCurr}
               </div>
             </div>
 
             {/* Fluxo de Taxa */}
-            <div className="relative pl-8 space-y-2 border-l-4 border-dashed border-amber-300 ml-4 text-left">
-              <div className="flex items-center gap-3 text-slate-700 font-bold bg-amber-100 py-3 px-4 rounded-xl border-2 border-amber-200 shadow-sm">
-                <span className="font-black text-[#1a4571] text-xs uppercase tracking-wider">Cotação do canal:</span>
-                <span className="font-mono font-black text-[#1a4571] text-sm">
+            <div className="relative pl-6 space-y-2 border-l-4 border-dashed border-amber-300 ml-3 text-left">
+              <div className="flex flex-wrap items-center gap-2 text-slate-700 font-bold bg-amber-100 py-2.5 px-3 rounded-xl border-2 border-amber-200 shadow-sm text-xs sm:text-sm">
+                <span className="font-black text-[#1a4571]">Cotação do canal:</span>
+                <span className="font-mono font-black text-[#1a4571]">
                   {isLoading ? (
-                    <span className="flex items-center gap-2"><RefreshCw size={14} className="animate-spin" /> Calculando...</span>
+                    <span className="flex items-center gap-1.5"><RefreshCw size={12} className="animate-spin" /> Calculando...</span>
                   ) : (
                     `1 ${fromCurr} = ${formatRate(currentRate)} ${toCurr}`
                   )}
                 </span>
               </div>
               {conversionError && (
-                <div className="text-red-600 text-xs font-bold bg-red-50 py-2.5 px-4 rounded-xl border-2 border-red-200 flex items-center gap-2 animate-pulse">
-                  <AlertCircle size={16} /> {conversionError}
+                <div className="text-red-600 text-[11px] font-bold bg-red-50 py-2 px-3 rounded-xl border-2 border-red-200 flex items-center gap-1.5 leading-tight">
+                  <AlertCircle size={14} className="shrink-0" />
+                  <span>{conversionError}</span>
                 </div>
               )}
             </div>
 
             {/* CARD PREMIUM V2: Valor Recebido */}
-            <div className="bg-[#1a4571] rounded-2xl p-6 shadow-2xl border-4 border-amber-400 flex items-center justify-between text-left relative overflow-hidden group hover:shadow-2xl transition-all duration-500">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#1a4571] to-[#0f2d4d]" />
-              <div className="absolute top-0 right-0 w-32 h-32 bg-amber-400/10 rounded-full blur-2xl pointer-events-none" />
+            <div className="bg-[#1a4571] rounded-2xl p-4 sm:p-6 shadow-2xl border-4 border-amber-400 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-left relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#1a4571] to-[#0f2d4d] rounded-xl" />
               
-              <div className="relative flex flex-col text-white z-10">
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="w-6 h-6 bg-amber-400 rounded-full flex items-center justify-center">
-                    <TrendingUp size={14} className="text-[#1a4571]" />
+              <div className="relative flex flex-col text-white z-10 min-w-0">
+                <div className="flex items-center gap-1.5 mb-1">
+                  <div className="w-5 h-5 bg-amber-400 rounded-full flex items-center justify-center shrink-0">
+                    <TrendingUp size={11} className="text-[#1a4571]" />
                   </div>
-                  <span className="text-xs font-black uppercase text-amber-400 tracking-wider">
+                  <span className="text-[10px] font-black uppercase text-amber-400 tracking-wider truncate">
                     O beneficiário recebe estimado
                   </span>
                 </div>
-                <span className="text-4xl sm:text-5xl font-black text-white tracking-tight mt-2 drop-shadow-lg">
+                <span className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight mt-1 truncate drop-shadow-md">
                   {isLoading ? (
-                    <span className="flex items-center gap-3">
-                      <RefreshCw size={28} className="animate-spin text-amber-400" />
-                      <span className="text-amber-400">...</span>
+                    <span className="flex items-center gap-2">
+                      <RefreshCw size={22} className="animate-spin text-amber-400" />
+                      <span className="text-amber-400 text-xl">...</span>
                     </span>
                   ) : (
-                    <span className="flex items-baseline gap-2">
-                      <span className="text-2xl sm:text-3xl text-amber-400">{toCurr}</span>
-                      {formatCurrency(result)}
-                    </span>
+                    <div className="flex items-baseline gap-1.5 flex-wrap">
+                      <span className="text-xl sm:text-2xl text-amber-400">{toCurr}</span>
+                      <span className="font-mono">{formatCurrency(result)}</span>
+                    </div>
                   )}
                 </span>
                 {!isLoading && result > 0 && (
-                  <span className="text-xs text-amber-300/80 font-medium mt-2 flex items-center gap-1">
-                    <CheckCircle2 size={12} /> Ordem processada com envio prioritário local
+                  <span className="text-[10px] text-amber-300/90 font-medium mt-2 flex items-center gap-1">
+                    <CheckCircle2 size={11} className="shrink-0 text-emerald-400" /> 
+                    <span>Ordem com prioridade de rede local</span>
                   </span>
                 )}
               </div>
               
-              <div className="relative z-10 flex flex-col items-end">
-                <div className="bg-amber-400 border-2 border-amber-500 text-[#1a4571] font-black px-4 py-2.5 rounded-xl shadow-md text-lg min-w-[110px] text-center">
+              <div className="relative z-10 flex flex-row sm:flex-col items-center sm:items-end justify-end gap-2 pt-2 sm:pt-0 border-t border-white/10 sm:border-none">
+                <div className="bg-amber-400 border-2 border-amber-500 text-[#1a4571] font-black px-3.5 py-1.5 h-10 flex items-center justify-center rounded-xl shadow-md text-sm sm:text-lg shrink-0 min-w-[85px] text-center">
                   {toCurr}
                 </div>
               </div>
@@ -439,20 +442,23 @@ const Transfer = () => {
               type="submit"
               form="transfer-form"
               disabled={isLoading || !!conversionError || amount <= 0}
-              className="w-full h-16 bg-[#1a4571] hover:bg-[#0f2d4d] disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-black text-lg rounded-2xl transition-all duration-300 uppercase tracking-wider flex items-center justify-center gap-3 shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full h-14 sm:h-16 bg-[#1a4571] hover:bg-[#0f2d4d] disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-black text-sm sm:text-base rounded-2xl transition-all duration-300 uppercase tracking-wider flex items-center justify-center gap-2 shadow-xl hover:scale-[1.01] active:scale-[0.99]"
             >
               {isLoading ? (
-                <span className="flex items-center gap-3"><RefreshCw size={20} className="animate-spin" /> PROCESSANDO...</span>
+                <span className="flex items-center gap-2"><RefreshCw size={16} className="animate-spin" /> PROCESSANDO...</span>
               ) : (
-                <> SOLICITAR TRANSFERÊNCIA <Send size={20} /> </>
+                <>
+                  <span>Solicitar Transferência</span>
+                  <Send size={16} />
+                </>
               )}
             </Button>
 
             {/* Footer de Garantias */}
-            <div className="flex items-center justify-center gap-4 text-xs font-bold text-slate-500 pt-2">
-              <span className="flex items-center gap-1"><ShieldCheck size={14} className="text-emerald-500" /> Remessa Segura</span>
+            <div className="flex items-center justify-center gap-3 text-[10px] font-bold text-slate-400 pt-1 flex-wrap">
+              <span className="flex items-center gap-0.5 text-slate-500"><ShieldCheck size={12} className="text-emerald-500" /> Remessa Segura</span>
               <span className="w-1 h-1 bg-slate-300 rounded-full" />
-              <span className="flex items-center gap-1"><Clock size={14} className="text-amber-500" /> Liquidação Direta</span>
+              <span className="flex items-center gap-0.5 text-slate-500"><Clock size={12} className="text-amber-500" /> Liquidação Direta</span>
             </div>
           </div>
         </div>

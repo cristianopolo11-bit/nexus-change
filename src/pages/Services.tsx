@@ -115,20 +115,20 @@ const Services = () => {
         </p>
       </header>
 
-      <div className="max-w-6xl mx-auto px-6 -mt-10">
+      {/* COMPONENTE DE ENTRADA SUAVE INTEGRADO NA GRID DE SERVIÇOS */}
+      <div className="max-w-6xl mx-auto px-6 -mt-10 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {services.map((service, index) => (
             <Card 
               key={index}
               onClick={() => service.actionType !== "soon" && handleCardClick(service)}
-              data-aos="fade-up"
               className={`p-8 bg-white border-2 border-amber-200 transition-all duration-300 shadow-lg rounded-2xl flex flex-col justify-between hover:shadow-xl hover:scale-[1.02] ${
                 service.actionType === "soon" ? "opacity-75 cursor-not-allowed" : "cursor-pointer " + service.color
               }`}
             >
               <div className="flex flex-col h-full justify-between">
                 <div>
-                  <div className="mb-6 p-4 bg-amber-50 w-fit rounded-xl border-2 border-amber-200 group-hover:scale-110 transition-transform">
+                  <div className="mb-6 p-4 bg-amber-50 w-fit rounded-xl border-2 border-amber-200 transition-transform">
                     {service.icon}
                   </div>
                   <h3 className="text-2xl font-black text-[#1a4571] uppercase italic mb-3 flex items-center flex-wrap gap-2">
@@ -146,13 +146,13 @@ const Services = () => {
                 </div>
                 
                 {service.actionType === "route" && (
-                  <div className="mt-8 flex items-center text-[#1a4571] font-black text-xs uppercase tracking-wider gap-2 group-hover:gap-4 transition-all">
+                  <div className="mt-8 flex items-center text-[#1a4571] font-black text-xs uppercase tracking-wider gap-2 transition-all">
                     ACESSAR FORMULÁRIO <ArrowRight size={16} />
                   </div>
                 )}
 
                 {service.actionType === "chat" && (
-                  <div className="mt-8 flex items-center text-emerald-600 font-black text-xs uppercase tracking-wider gap-2 group-hover:gap-4 transition-all">
+                  <div className="mt-8 flex items-center text-emerald-600 font-black text-xs uppercase tracking-wider gap-2 transition-all">
                     SOLICITAR VIA WHATSAPP <MessageSquare size={16} />
                   </div>
                 )}
@@ -165,20 +165,6 @@ const Services = () => {
               </div>
             </Card>
           ))}
-        </div>
-
-        {/* Banner inferior */}
-        <div data-aos="fade-up" className="mt-16 bg-[#1a4571] rounded-[2.5rem] p-10 text-white text-center border-4 border-amber-400 shadow-2xl">
-          <div className="space-y-4">
-            <div className="flex items-center justify-center gap-2">
-              <ShieldCheck className="text-amber-400" />
-              <span className="font-bold uppercase tracking-widest text-sm text-amber-200">Garantia Nexus</span>
-            </div>
-            <h2 className="text-3xl font-black italic uppercase">Pronto para transacionar?</h2>
-            <p className="text-amber-100 font-medium max-w-xl mx-auto text-sm">
-              A nossa equipa está disponível para processar as suas operações com total segurança, rapidez e sigilo absoluto.
-            </p>
-          </div>
         </div>
       </div>
     </div>

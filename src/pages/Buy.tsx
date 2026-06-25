@@ -1,10 +1,32 @@
 
+Aqui tens o código do ficheiro **`Buy.tsx`** totalmente reestruturado e otimizado para telemóveis.
+
+Tal como fizemos na página de vendas, eliminámos as restrições da grelha de 12 colunas no mobile, ajustámos os cabeçalhos para evitar colisões de texto, adicionámos propriedades de encolhimento dinâmico nos seletores de moeda (`shrink-0`) e aplicámos a animação de entrada nativa do Tailwind CSS.
+
+```tsx
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { convert, getExchangeRate } from "@/lib/currencies";
-import { ArrowLeft, Send, ShieldCheck, ChevronDown, TrendingUp, TrendingDown, RefreshCw, Zap, CheckCircle2, Info, Copy, ArrowRightLeft, Wallet, Clock, Star, AlertCircle } from "lucide-react";
+import { 
+  ArrowLeft, 
+  Send, 
+  ShieldCheck, 
+  ChevronDown, 
+  TrendingUp, 
+  TrendingDown, 
+  RefreshCw, 
+  Zap, 
+  CheckCircle2, 
+  Info, 
+  Copy, 
+  ArrowRightLeft, 
+  Wallet, 
+  Clock, 
+  Star, 
+  AlertCircle 
+} from "lucide-react";
 
 // ─── DADOS ──────────────────────────────────────────────────────────
 const CURRENCIES = [
@@ -57,12 +79,12 @@ const CurrencySelect = ({ value, onChange, label, variant = "light" }: CurrencyS
   const isDark = variant === "dark";
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="relative shrink-0">
       <label className="sr-only">{label}</label>
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className={`shadow-lg border-2 rounded-2xl p-3 font-black text-sm min-w-[110px] flex items-center justify-center gap-2 outline-none transition-all duration-300 hover:scale-105 active:scale-95 ${
+        className={`shadow-lg border-2 rounded-2xl p-3 font-black text-sm min-w-[100px] sm:min-w-[110px] flex items-center justify-center gap-1.5 outline-none transition-all duration-300 hover:scale-105 active:scale-95 ${
           isDark 
             ? "bg-amber-400 border-amber-500 text-[#1a4571] hover:bg-amber-300 focus:ring-4 focus:ring-amber-200" 
             : "bg-white border-amber-200 text-[#1a4571] hover:border-amber-400 focus:ring-4 focus:ring-amber-100"
@@ -70,8 +92,8 @@ const CurrencySelect = ({ value, onChange, label, variant = "light" }: CurrencyS
         aria-label={`Moeda selecionada: ${value}. Clique para alterar.`}
         aria-expanded={open}
       >
-        <span className="text-lg">{value}</span>
-        <ChevronDown size={16} className={`transition-transform duration-300 ${open ? "rotate-180" : ""}`} />
+        <span className="text-base sm:text-lg">{value}</span>
+        <ChevronDown size={14} className={`transition-transform duration-300 ${open ? "rotate-180" : ""}`} />
       </button>
       {open && (
         <div className="absolute right-0 z-[100] mt-2 w-32 bg-white border-2 border-amber-200 rounded-2xl shadow-2xl max-h-48 overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-200">
@@ -106,7 +128,7 @@ const PopularPairChip = ({ pair, isActive, onClick }: PopularPairChipProps) => (
   <button
     type="button"
     onClick={onClick}
-    className={`px-4 py-2 rounded-full text-xs font-bold transition-all duration-300 whitespace-nowrap ${
+    className={`px-3.5 py-2 rounded-full text-xs font-bold transition-all duration-300 whitespace-nowrap ${
       isActive 
         ? "bg-amber-400 text-[#1a4571] shadow-lg scale-105 ring-2 ring-amber-500" 
         : "bg-white/80 text-slate-600 hover:bg-amber-100 hover:scale-105 border border-amber-200"
@@ -142,7 +164,6 @@ const Buy = () => {
   const [inputFocused, setInputFocused] = useState(false);
   const [amountError, setAmountError] = useState<string | null>(null);
 
-  // --- Lógica de Conversão Estabilizada ---
   const fetchConversion = useCallback(async () => {
     if (amount <= 0) {
       setResult(0);
@@ -155,10 +176,7 @@ const Buy = () => {
     setConversionError(null);
 
     try {
-      // 1. Puxa a taxa comercial configurada nocurrencies.ts diretamente
       const baseRate = getExchangeRate(fromCurr, toCurr, false);
-      
-      // 2. Executa a conversão final do motor Nexus
       const totalConvertido = await convert(amount, fromCurr, toCurr, false);
 
       if (typeof totalConvertido !== "number" || isNaN(totalConvertido) || totalConvertido <= 0) {
@@ -166,8 +184,6 @@ const Buy = () => {
       }
 
       setResult(totalConvertido);
-      
-      // 3. Define a taxa real do rácio para o ecrã
       const finalRate = baseRate && baseRate > 0 ? baseRate : (totalConvertido / amount);
 
       if (prevRate > 0) {
@@ -212,7 +228,7 @@ const Buy = () => {
     if (!isNaN(val) && val >= 0) {
       setAmount(val);
       if (val > 10000000) {
-        setAmountError("Valor muito elevado. Contacte-nos para valores acima de 10M.");
+        setAmountError("Valor elevado. Contacte-nos para valores acima de 10M.");
       } else {
         setAmountError(null);
       }
@@ -290,74 +306,78 @@ const Buy = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-amber-50 font-sans text-slate-900 antialiased pb-24 selection:bg-amber-200 selection:text-[#1a4571]">
+    <div className="min-h-screen w-full bg-amber-50 font-sans text-slate-900 antialiased pb-12 sm:pb-24 selection:bg-amber-200 selection:text-[#1a4571]">
       {showConfetti && (
         <div className="fixed inset-0 pointer-events-none z-[100] flex items-center justify-center">
           <div className="absolute inset-0 bg-amber-400/20 animate-pulse" />
-          <div className="text-6xl animate-bounce">🎉</div>
+          <div className="text-5xl sm:text-6xl animate-bounce">🎉</div>
         </div>
       )}
 
-      {/* HEADER */}
-      <header className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between border-b-2 border-amber-200 sticky top-0 bg-amber-50/95 backdrop-blur z-50">
-        <div className="flex items-center gap-4">
+      {/* HEADER ADAPTADO */}
+      <header className="max-w-5xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-3 border-b-2 border-amber-200 sticky top-0 bg-amber-50/95 backdrop-blur z-50">
+        <div className="flex items-center gap-2 sm:gap-4">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => navigate("/services")}
-            className="rounded-full hover:bg-amber-200 transition-all duration-300 hover:scale-110"
+            className="rounded-full hover:bg-amber-200 h-10 w-10 transition-all duration-300 active:scale-95 shrink-0"
             aria-label="Voltar"
           >
-            <ArrowLeft size={22} className="text-[#1a4571]" />
+            <ArrowLeft size={20} className="text-[#1a4571]" />
           </Button>
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-amber-400 rounded-lg flex items-center justify-center shadow-lg">
-              <Zap size={18} className="text-[#1a4571]" />
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="w-8 h-8 bg-amber-400 rounded-lg flex items-center justify-center shadow-lg shrink-0">
+              <Zap size={16} className="text-[#1a4571]" />
             </div>
-            <span className="text-sm font-bold text-[#1a4571] tracking-wider uppercase">
+            <span className="text-xs sm:text-sm font-black text-[#1a4571] tracking-wider uppercase whitespace-nowrap">
               Nexus Compra
             </span>
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        
+        <div className="flex items-center gap-2 ml-auto sm:ml-0">
           <button 
             onClick={handleManualRefresh}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all duration-500 ${
-              isRefreshing ? "bg-amber-400 text-[#1a4571] animate-spin" : "bg-white text-slate-600 hover:bg-amber-100"
+            className={`flex items-center gap-1 px-2.5 py-1.5 rounded-full text-xs font-bold transition-all duration-500 shadow-sm border border-amber-200 bg-white text-slate-600 hover:bg-amber-100 ${
+              isRefreshing ? "animate-pulse text-amber-500" : ""
             }`}
           >
-            <RefreshCw size={14} className={isRefreshing ? "animate-spin" : ""} />
-            <span className="hidden sm:inline">Atualizar</span>
+            <RefreshCw size={12} className={isRefreshing ? "animate-spin text-[#1a4571]" : ""} />
+            <span className="text-[11px] sm:inline">Atualizar</span>
           </button>
-          <div className="flex items-center gap-2 text-xs font-bold text-[#1a4571] bg-amber-400 px-3 py-1.5 rounded-full shadow-md">
-            <ShieldCheck size={16} />
-            <span>Operação Segura</span>
+          <div className="flex items-center gap-1 text-[11px] sm:text-xs font-bold text-[#1a4571] bg-amber-400 px-2.5 py-1.5 rounded-full shadow-md whitespace-nowrap">
+            <ShieldCheck size={14} className="shrink-0" />
+            <span>Segura</span>
           </div>
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-4 mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      {/* FLUXO PRINCIPAL RECONFIGURADO PARA MOBILE */}
+      <main className="max-w-5xl mx-auto px-4 mt-6 sm:mt-8 flex flex-col lg:flex-row gap-6 lg:gap-8 items-start animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+        
         {/* COLUNA ESQUERDA: FORMULÁRIO */}
-        <div className="lg:col-span-5 space-y-6 text-left">
-          <div className="space-y-3">
-            <div className="inline-flex items-center gap-2 bg-amber-400 px-4 py-1.5 rounded-full text-xs font-black text-[#1a4571] shadow-md">
-              <Star size={14} fill="currentColor" />
+        <div className="w-full lg:w-[42%] space-y-5 sm:space-y-6 text-left">
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-1.5 bg-amber-400 px-3 py-1 rounded-full text-[11px] font-black text-[#1a4571] shadow-sm">
+              <Star size={12} fill="currentColor" />
               <span>Taxas em tempo real</span>
             </div>
-            <h1 className="text-4xl font-black text-[#1a4571] tracking-tight leading-tight">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#1a4571] tracking-tight leading-tight">
               Comprar divisas e moedas estrangeiras
             </h1>
-            <p className="text-sm text-slate-600 font-medium leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
               Wise Design aplicado. Compre saldo internacional com taxas estáveis controladas localmente.
             </p>
           </div>
 
+          {/* PARES POPULARES HORIZONTAIS */}
           <div className="bg-white rounded-2xl p-4 border-2 border-amber-200 shadow-lg">
-            <div className="flex items-center gap-2 mb-3">
-              <TrendingUp size={16} className="text-amber-500" />
-              <span className="text-xs font-black uppercase text-slate-500 tracking-wider">Pares Populares</span>
+            <div className="flex items-center gap-2 mb-2.5">
+              <TrendingUp size={14} className="text-amber-500" />
+              <span className="text-[11px] font-black uppercase text-slate-500 tracking-wider">Pares Populares</span>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-row flex-wrap gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
               {POPULAR_PAIRS.map((pair) => (
                 <PopularPairChip
                   key={pair.label}
@@ -369,10 +389,10 @@ const Buy = () => {
             </div>
           </div>
 
-          <form onSubmit={handleFinalizarCompra} id="buy-form" className="bg-white p-6 rounded-2xl border-2 border-amber-200 shadow-lg space-y-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Wallet size={18} className="text-amber-500" />
-              <span className="text-xs font-black uppercase text-slate-500 tracking-wider">
+          <form onSubmit={handleFinalizarCompra} id="buy-form" className="bg-white p-5 sm:p-6 rounded-2xl border-2 border-amber-200 shadow-lg space-y-4">
+            <div className="flex items-center gap-2 mb-1">
+              <Wallet size={16} className="text-amber-500" />
+              <span className="text-[11px] font-black uppercase text-slate-500 tracking-wider">
                 Dados do Comprador
               </span>
             </div>
@@ -386,10 +406,10 @@ const Buy = () => {
                 placeholder="Seu nome completo"
                 value={clientName}
                 onChange={(e) => setClientName(e.target.value)}
-                className="bg-amber-50 h-14 rounded-xl border-2 border-amber-200 focus-visible:ring-4 focus-visible:ring-amber-300 focus-visible:border-amber-400 transition-all duration-300 text-base font-bold placeholder:font-normal"
+                className="bg-amber-50/50 h-12 sm:h-14 rounded-xl border-2 border-amber-200 focus-visible:ring-4 focus-visible:ring-amber-300 focus-visible:border-amber-400 transition-all duration-300 text-sm sm:text-base font-bold placeholder:font-normal"
               />
               {clientName && (
-                <CheckCircle2 size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-500 animate-in fade-in" />
+                <CheckCircle2 size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-emerald-500" />
               )}
             </div>
 
@@ -402,37 +422,37 @@ const Buy = () => {
                 placeholder="Contacto telefónico (ex: 9XX XXX XXX)"
                 value={clientPhone}
                 onChange={handlePhoneChange}
-                className="bg-amber-50 h-14 rounded-xl border-2 border-amber-200 focus-visible:ring-4 focus-visible:ring-amber-300 focus-visible:border-amber-400 transition-all duration-300 text-base font-bold placeholder:font-normal"
+                className="bg-amber-50/50 h-12 sm:h-14 rounded-xl border-2 border-amber-200 focus-visible:ring-4 focus-visible:ring-amber-300 focus-visible:border-amber-400 transition-all duration-300 text-sm sm:text-base font-bold placeholder:font-normal"
               />
               {isValidAngolanPhone(clientPhone) && (
-                <CheckCircle2 size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-500 animate-in fade-in" />
+                <CheckCircle2 size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-emerald-500" />
               )}
             </div>
 
-            <div className="bg-amber-100 rounded-xl p-3 flex items-start gap-2 border border-amber-200">
-              <Info size={16} className="text-amber-600 mt-0.5 shrink-0" />
-              <p className="text-xs text-amber-800 font-medium leading-relaxed">
-                Os dados são enviados diretamente via WhatsApp. Não guardamos informações pessoais no servidor.
+            <div className="bg-amber-100/60 rounded-xl p-3 flex items-start gap-2 border border-amber-200">
+              <Info size={14} className="text-amber-600 mt-0.5 shrink-0" />
+              <p className="text-[11px] text-amber-800 font-medium leading-relaxed">
+                Os dados são enviados diretamente via WhatsApp. Não guardamos informações pessoais nos nossos servidores.
               </p>
             </div>
           </form>
         </div>
 
         {/* COLUNA DIREITA: SIMULADOR */}
-        <div className="lg:col-span-7 w-full">
-          <div className="bg-white rounded-[2rem] border-4 border-amber-400 shadow-2xl p-6 space-y-6 relative overflow-hidden">
-            <div className="absolute -top-20 -right-20 w-40 h-40 bg-amber-200 rounded-full opacity-50 blur-3xl" />
-            <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-amber-300 rounded-full opacity-30 blur-3xl" />
+        <div className="w-full lg:flex-1">
+          <div className="bg-white rounded-[2rem] border-4 border-amber-400 shadow-2xl p-4 sm:p-6 space-y-5 sm:space-y-6 relative overflow-hidden">
+            <div className="absolute -top-20 -right-20 w-40 h-40 bg-amber-200 rounded-full opacity-50 blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-amber-300 rounded-full opacity-30 blur-3xl pointer-events-none" />
             
-            <div className="relative flex items-center justify-between">
+            <div className="relative flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <div className="w-10 h-10 bg-amber-400 rounded-xl flex items-center justify-center shadow-lg">
-                  <ArrowRightLeft size={20} className="text-[#1a4571]" />
+                <div className="w-9 h-9 sm:w-10 h-10 bg-amber-400 rounded-xl flex items-center justify-center shadow-lg shrink-0">
+                  <ArrowRightLeft size={18} className="text-[#1a4571]" />
                 </div>
                 <div className="text-left">
-                  <h2 className="text-lg font-black text-[#1a4571]">Câmbio</h2>
-                  <p className="text-xs text-slate-500 font-medium flex items-center gap-1">
-                    <Clock size={12} />
+                  <h2 className="text-base sm:text-lg font-black text-[#1a4571]">Câmbio</h2>
+                  <p className="text-[11px] text-slate-500 font-medium flex items-center gap-1 whitespace-nowrap">
+                    <Clock size={11} />
                     Atualizado às {lastUpdated.toLocaleTimeString("pt-PT", { hour: "2-digit", minute: "2-digit" })}
                   </p>
                 </div>
@@ -440,17 +460,18 @@ const Buy = () => {
               <button
                 type="button"
                 onClick={handleSwap}
-                className={`p-3 rounded-xl bg-amber-100 hover:bg-amber-200 transition-all duration-300 hover:scale-110 active:scale-95 shadow-md ${isFlipped ? "rotate-180" : ""}`}
+                className="p-2.5 rounded-xl bg-amber-100 hover:bg-amber-200 transition-all duration-300 hover:scale-110 active:scale-95 shadow-md shrink-0"
                 title="Inverter moedas"
               >
-                <ArrowRightLeft size={18} className="text-[#1a4571]" />
+                <ArrowRightLeft size={16} className={isFlipped ? "rotate-180 text-[#1a4571]" : "text-[#1a4571]"} />
               </button>
             </div>
 
-            <div className={`bg-amber-50 rounded-2xl p-5 border-2 border-amber-200 flex items-center justify-between transition-all duration-300 ${inputFocused ? "ring-4 ring-amber-300 border-amber-400 shadow-lg" : "shadow-md"}`}>
-              <div className="flex flex-col text-left w-full">
-                <label htmlFor="buy-amount" className="text-xs font-black text-amber-600 uppercase tracking-wider flex items-center gap-1">
-                  <TrendingDown size={14} />
+            {/* Caixa: Valor de Entrega */}
+            <div className={`bg-amber-50 rounded-2xl p-4 sm:p-5 border-2 border-amber-200 flex items-center justify-between gap-3 transition-all duration-300 ${inputFocused ? "ring-4 ring-amber-300 border-amber-400 shadow-lg" : "shadow-md"}`}>
+              <div className="flex flex-col text-left w-full min-w-0">
+                <label htmlFor="buy-amount" className="text-[11px] font-black text-amber-600 uppercase tracking-wider flex items-center gap-1 truncate">
+                  <TrendingDown size={12} />
                   Tu entregas
                 </label>
                 <input
@@ -458,14 +479,15 @@ const Buy = () => {
                   type="number"
                   min="0"
                   step="0.01"
-                  value={amount}
+                  value={amount || ""}
                   onChange={handleAmountChange}
                   onFocus={() => setInputFocused(true)}
                   onBlur={() => setInputFocused(false)}
-                  className="bg-transparent text-3xl font-black text-[#1a4571] outline-none w-full mt-2 placeholder:text-amber-300"
+                  className="bg-transparent text-2xl sm:text-3xl font-black text-[#1a4571] outline-none w-full mt-1.5 placeholder:text-amber-300 min-w-0"
+                  placeholder="0"
                 />
                 {amountError && (
-                  <span className="text-xs text-red-500 font-bold mt-1 animate-pulse">{amountError}</span>
+                  <span className="text-[10px] text-red-500 font-bold mt-1 leading-tight">{amountError}</span>
                 )}
               </div>
               <CurrencySelect
@@ -475,94 +497,90 @@ const Buy = () => {
               />
             </div>
 
-            <div className="relative pl-8 space-y-3 border-l-4 border-dashed border-amber-300 ml-4 text-left">
-              <div className="flex items-center gap-3 text-slate-700 font-bold bg-amber-100 py-3 px-4 rounded-xl border-2 border-amber-200 shadow-sm hover:shadow-md transition-shadow duration-300">
-                <span className="font-black text-[#1a4571] text-sm">Cotação:</span>
-                <span className="font-mono font-black text-[#1a4571] text-sm">
+            {/* Fluxo Intermédio */}
+            <div className="relative pl-6 sm:pl-8 space-y-2.5 border-l-4 border-dashed border-amber-300 ml-3 sm:ml-4 text-left">
+              <div className="flex flex-wrap items-center gap-2 text-slate-700 font-bold bg-amber-100/70 py-2.5 px-3 sm:px-4 rounded-xl border-2 border-amber-200 shadow-sm text-xs sm:text-sm">
+                <span className="font-black text-[#1a4571]">Cotação:</span>
+                <span className="font-mono font-black text-[#1a4571]">
                   {isLoading ? (
-                    <span className="flex items-center gap-2">
-                      <RefreshCw size={14} className="animate-spin" />
-                      A calcular...
-                    </span>
+                    <span className="flex items-center gap-1.5"><RefreshCw size={12} className="animate-spin" /> A calcular...</span>
                   ) : (
                     `1 ${fromCurr} = ${formatRate(currentRate)} ${toCurr}`
                   )}
                 </span>
                 {!isLoading && rateTrend !== "stable" && (
-                  <span className={`flex items-center gap-1 text-xs font-black ${rateTrend === "up" ? "text-emerald-600" : "text-red-500"}`}>
-                    {rateTrend === "up" ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+                  <span className={`flex items-center gap-0.5 text-[11px] font-black ${rateTrend === "up" ? "text-emerald-600" : "text-red-500"}`}>
+                    {rateTrend === "up" ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
                     {rateTrend === "up" ? "Subiu" : "Desceu"}
                   </span>
                 )}
               </div>
               
               {conversionError && (
-                <div className="text-red-600 text-xs font-bold bg-red-50 py-3 px-4 rounded-xl border-2 border-red-200 flex items-center gap-2 animate-pulse">
-                  <AlertCircle size={16} />
-                  {conversionError}
+                <div className="text-red-600 text-[11px] font-bold bg-red-50 py-2 px-3 rounded-xl border-2 border-red-200 flex items-center gap-1.5">
+                  <AlertCircle size={14} className="shrink-0" />
+                  <span>{conversionError}</span>
                 </div>
               )}
               
               <button
                 type="button"
                 onClick={() => setShowRateHistory(!showRateHistory)}
-                className="text-xs font-bold text-amber-600 hover:text-amber-700 flex items-center gap-1 transition-colors"
+                className="text-[11px] font-bold text-amber-600 hover:text-amber-700 flex items-center gap-1 transition-colors outline-none"
               >
-                <TrendingUp size={12} />
+                <TrendingUp size={11} />
                 {showRateHistory ? "Ocultar detalhes" : "Ver detalhes da taxa"}
               </button>
               
               {showRateHistory && (
-                <div className="bg-white rounded-xl p-3 border border-amber-200 text-xs space-y-2 animate-in slide-in-from-top-2">
-                  <div className="flex justify-between font-bold text-slate-600">
+                <div className="bg-white rounded-xl p-3 border border-amber-200 text-[11px] space-y-1.5 animate-in slide-in-from-top-2 max-w-xs">
+                  <div className="flex justify-between font-bold text-slate-600 gap-4">
                     <span>Taxa atual:</span>
-                    <span className="text-[#1a4571]">{formatRate(currentRate)} {toCurr}</span>
+                    <span className="text-[#1a4571] font-mono">{formatRate(currentRate)} {toCurr}</span>
                   </div>
-                  <div className="flex justify-between font-bold text-slate-600">
-                    <span>Última atualização:</span>
+                  <div className="flex justify-between font-bold text-slate-600 gap-4">
+                    <span>Sincronização:</span>
                     <span>{lastUpdated.toLocaleTimeString("pt-PT")}</span>
                   </div>
                 </div>
               )}
             </div>
 
-            {/* CARD "TU RECEBES" MELHORADO - SEM overflow-hidden */}
-            <div className="bg-[#1a4571] rounded-2xl p-6 shadow-2xl border-4 border-amber-400 flex items-center justify-between text-left relative group hover:shadow-2xl transition-all duration-500">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#1a4571] to-[#0f2d4d] rounded-2xl" />
-              <div className="absolute top-0 right-0 w-32 h-32 bg-amber-400/10 rounded-full blur-2xl" />
-              <div className="absolute bottom-0 left-0 w-24 h-24 bg-amber-400/5 rounded-full blur-xl" />
+            {/* CARD "TU RECEBES" PREMIUM ADAPTADO */}
+            <div className="bg-[#1a4571] rounded-2xl p-4 sm:p-6 shadow-2xl border-4 border-amber-400 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-left relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#1a4571] to-[#0f2d4d] rounded-xl" />
               
-              <div className="relative flex flex-col text-white z-10">
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="w-6 h-6 bg-amber-400 rounded-full flex items-center justify-center">
-                    <TrendingUp size={14} className="text-[#1a4571]" />
+              <div className="relative flex flex-col text-white z-10 min-w-0">
+                <div className="flex items-center gap-1.5 mb-1">
+                  <div className="w-5 h-5 bg-amber-400 rounded-full flex items-center justify-center shrink-0">
+                    <TrendingUp size={11} className="text-[#1a4571]" />
                   </div>
-                  <span className="text-xs font-black uppercase text-amber-400 tracking-wider">
+                  <span className="text-[10px] font-black uppercase text-amber-400 tracking-wider truncate">
                     Tu recebes estimado
                   </span>
                 </div>
-                <span className="text-4xl sm:text-5xl font-black text-white tracking-tight mt-2 drop-shadow-lg">
+                <span className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight mt-1 truncate drop-shadow-md">
                   {isLoading ? (
-                    <span className="flex items-center gap-3">
-                      <RefreshCw size={28} className="animate-spin text-amber-400" />
-                      <span className="text-amber-400">...</span>
+                    <span className="flex items-center gap-2">
+                      <RefreshCw size={22} className="animate-spin text-amber-400" />
+                      <span className="text-amber-400 text-xl">...</span>
                     </span>
                   ) : (
-                    <span className="flex items-baseline gap-2">
-                      <span className="text-2xl sm:text-3xl text-amber-400">{toCurr}</span>
-                      {formatCurrency(result)}
-                    </span>
+                    <div className="flex items-baseline gap-1.5 flex-wrap">
+                      <span className="text-xl sm:text-2xl text-amber-400">{toCurr}</span>
+                      <span className="font-mono">{formatCurrency(result)}</span>
+                    </div>
                   )}
                 </span>
                 {!isLoading && result > 0 && (
-                  <span className="text-xs text-amber-300/80 font-medium mt-2 flex items-center gap-1">
-                    <CheckCircle2 size={12} />
-                    Valor calculado com taxa comercial
+                  <span className="text-[10px] text-amber-300/90 font-medium mt-2 flex items-center gap-1">
+                    <CheckCircle2 size={11} className="shrink-0 text-emerald-400" />
+                    <span>Valor calculado com taxa comercial</span>
                   </span>
                 )}
               </div>
               
-              <div className="relative z-10 flex flex-col items-end gap-3">
+              <div className="relative z-10 flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 pt-3 sm:pt-0 border-t border-white/10 sm:border-none">
                 <CurrencySelect
                   value={toCurr}
                   onChange={setToCurr}
@@ -572,53 +590,46 @@ const Buy = () => {
                 <button
                   type="button"
                   onClick={handleCopyAmount}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-xs transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg ${
+                  className={`flex items-center gap-1 px-3 py-2 h-10 rounded-xl font-bold text-xs transition-all duration-300 active:scale-95 shadow-lg ${
                     copiedAmount 
                       ? "bg-emerald-500 text-white" 
                       : "bg-amber-400 text-[#1a4571] hover:bg-amber-300"
                   }`}
                   title="Copiar valor"
                 >
-                  {copiedAmount ? <CheckCircle2 size={16} /> : <Copy size={16} />}
-                  {copiedAmount ? "Copiado!" : "Copiar"}
+                  {copiedAmount ? <CheckCircle2 size={14} /> : <Copy size={14} />}
+                  <span>{copiedAmount ? "Copiado" : "Copiar"}</span>
                 </button>
               </div>
             </div>
 
+            {/* BOTÃO COMPRAR */}
             <Button
               type="submit"
               form="buy-form"
               disabled={isLoading || !!conversionError || amount <= 0}
-              className="w-full h-16 bg-[#1a4571] hover:bg-[#0f2d4d] disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-black text-lg rounded-2xl transition-all duration-300 uppercase tracking-wider flex items-center justify-center gap-3 shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full h-14 sm:h-16 bg-[#1a4571] hover:bg-[#0f2d4d] disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-black text-sm sm:text-base rounded-2xl transition-all duration-300 uppercase tracking-wider flex items-center justify-center gap-2 shadow-xl hover:scale-[1.01] active:scale-[0.99]"
             >
               {isLoading ? (
-                <span className="flex items-center gap-3">
-                  <RefreshCw size={20} className="animate-spin" />
+                <span className="flex items-center gap-2">
+                  <RefreshCw size={16} className="animate-spin" />
                   A CALCULAR...
                 </span>
               ) : (
                 <>
-                 COMPRAR
-                  <Send size={20} className="transition-transform" />
+                  <span>COMPRAR</span>
+                  <Send size={16} />
                 </>
               )}
             </Button>
 
-            <div className="flex items-center justify-center gap-4 text-xs font-bold text-slate-500 pt-2">
-              <span className="flex items-center gap-1">
-                <ShieldCheck size={14} className="text-emerald-500" />
-                SSL Seguro
-              </span>
+            {/* ELEMENTOS DE SEGURANÇA */}
+            <div className="flex items-center justify-center gap-3 text-[10px] font-bold text-slate-400 pt-1 flex-wrap">
+              <span className="flex items-center gap-0.5 text-slate-500"><ShieldCheck size={12} className="text-emerald-500" /> SSL Seguro</span>
               <span className="w-1 h-1 bg-slate-300 rounded-full" />
-              <span className="flex items-center gap-1">
-                <Clock size={14} className="text-amber-500" />
-                24h/7d
-              </span>
+              <span className="flex items-center gap-0.5 text-slate-500"><Clock size={12} className="text-amber-500" /> 24h/7d</span>
               <span className="w-1 h-1 bg-slate-300 rounded-full" />
-              <span className="flex items-center gap-1">
-                <Zap size={14} className="text-amber-500" />
-                Instantâneo
-              </span>
+              <span className="flex items-center gap-0.5 text-slate-500"><Zap size={12} className="text-amber-500" /> Instantâneo</span>
             </div>
           </div>
         </div>
