@@ -202,8 +202,9 @@ const Transfer = () => {
       const fallbackRate = getExchangeRate(fromCurr, toCurr, false) ?? 1;
       setCurrentRate(fallbackRate);
       setResult(amount * fallbackRate);
-    } fillly {
+    } finally {
       setIsLoading(false);
+    }
     }
   }, [amount, fromCurr, toCurr]);
 
