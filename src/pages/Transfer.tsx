@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { convert, getExchangeRate } from "@/lib/currencies";
-import { ArrowLeft, Send, ShieldCheck, Info, HelpCircle, ChevronDown, Landmark, User, Globe, Wallet, RefreshCw, TrendingUp, TrendingDown, Clock, ArrowRightLeft, CheckCircle2, AlertCircle } from "lucide-react";
+import { ArrowLeft, Send, ShieldCheck, Info, HelpCircle, ChevronDown, Landmark, User, Globe, Wallet, RefreshCw, TrendingUp, TrendingDown, Clock, ArrowRightLeft, CheckCircle2, AlertCircle, Mail } from "lucide-react";
 
 // ─── DADOS ESTÁTICOS ────────────────────────────────────────────────
 const COUNTRY_TO_CURRENCY: Record<string, string> = {
@@ -48,6 +48,10 @@ const formatCurrency = (value: number, digits = 2) =>
 
 const formatRate = (value: number) =>
   value.toLocaleString("pt-PT", { maximumFractionDigits: 5 });
+
+const isValidEmail = (email: string): boolean => {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+};
 
 // ─── COMPONENTE: DROPDOWN DE PAÍS COM BANDEIRA ────────────────────
 interface CountrySelectProps {
@@ -160,6 +164,7 @@ const Transfer = () => {
   const navigate = useNavigate();
 
   const [senderName, setSenderName] = useState("");
+  const [senderEmail, setSenderEmail] = useState("");
   const [senderCountry, setSenderCountry] = useState("Angola");
   const [senderMethod, setSenderMethod] = useState("Banco");
 
@@ -197,7 +202,7 @@ const Transfer = () => {
       const fallbackRate = getExchangeRate(fromCurr, toCurr, false) ?? 1;
       setCurrentRate(fallbackRate);
       setResult(amount * fallbackRate);
-    } finally {
+    } fillly {
       setIsLoading(false);
     }
   }, [amount, fromCurr, toCurr]);
@@ -214,6 +219,11 @@ const Transfer = () => {
       return;
     }
 
+    if (senderEmail.trim() && !isValidEmail(senderEmail)) {
+      alert("Por favor, insere um endereço de email válido.");
+      return;
+    }
+
     if (amount <= 0) {
       alert("O valor a transferir deve ser superior a zero.");
       return;
@@ -223,6 +233,7 @@ const Transfer = () => {
       `🚀 *SOLICITAÇÃO DE TRANSFERÊNCIA INTERNACIONAL*\n\n` +
       `👤 *ORDENANTE (QUEM ENVIA):*\n` +
       `• Nome: ${senderName.trim()}\n` +
+      `• Email: ${senderEmail.trim() ? senderEmail.trim() : "Não informado"}\n` +
       `• País atual: ${senderCountry} ${COUNTRY_FLAGS[senderCountry]}\n` +
       `• Método de envio: ${senderMethod}\n\n` +
       `🎯 *BENEFICIÁRIO (QUEM RECEBE):*\n` +
@@ -279,7 +290,7 @@ const Transfer = () => {
               Enviar dinheiro internacionalmente
             </h1>
             <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
-              Transfira de forma direta e sem burocracias externas. O seu canal de envio direto.
+              Envie dinheiro para o mundo todo pagando menos. Transfira o seu dinheiro para onde ele realmente importa, economize em transferências internacionais em mais de 10 moedas.
             </p>
           </div>
 
@@ -293,14 +304,33 @@ const Transfer = () => {
                   1. Quem Envia (Ordenante)
                 </span>
               </div>
-              <Input
-                type="text"
-                required
-                placeholder="Nome completo do remetente"
-                value={senderName}
-                onChange={(e) => setSenderName(e.target.value)}
-                className="bg-amber-50/60 h-12 rounded-xl border-2 border-amber-200 focus-visible:ring-4 focus-visible:ring-amber-300 font-bold text-sm sm:text-base"
-              />
+              
+              <div className="space-y-3">
+                <Input
+                  type="text"
+                  required
+                  placeholder="Nome completo do remetente"
+                  value={senderName}
+                  onChange={(e) => setSenderName(e.target.value)}
+                  className="bg-amber-50/60 h-12 rounded-xl border-2 border-amber-200 focus-visible:ring-4 focus-visible:ring-amber-300 font-bold text-sm sm:text-base"
+                />
+
+                <div className="relative">
+                  <Input
+                    type="email"
+                    required
+                    placeholder="Endereço de email do remetente"
+                    value={senderEmail}
+                    onChange={(e) => setSenderEmail(e.target.value)}
+                    className="bg-amber-50/60 h-12 rounded-xl border-2 border-amber-200 focus-visible:ring-4 focus-visible:ring-amber-300 font-bold text-sm sm:text-base pr-10"
+                  />
+                  <Mail size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                  {isValidEmail(senderEmail) && (
+                    <CheckCircle2 size={16} className="absolute right-9 top-1/2 -translate-y-1/2 text-emerald-500" />
+                  )}
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <CountrySelect value={senderCountry} onChange={setSenderCountry} label="País de Origem" />
                 <MethodSelect value={senderMethod} onChange={setSenderMethod} label="Método de Envio" />

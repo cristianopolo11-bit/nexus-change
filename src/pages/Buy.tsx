@@ -1,9 +1,3 @@
-
-Aqui tens o código do ficheiro **`Buy.tsx`** totalmente reestruturado e otimizado para telemóveis.
-
-Tal como fizemos na página de vendas, eliminámos as restrições da grelha de 12 colunas no mobile, ajustámos os cabeçalhos para evitar colisões de texto, adicionámos propriedades de encolhimento dinâmico nos seletores de moeda (`shrink-0`) e aplicámos a animação de entrada nativa do Tailwind CSS.
-
-```tsx
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -25,7 +19,10 @@ import {
   Wallet, 
   Clock, 
   Star, 
-  AlertCircle 
+  AlertCircle,
+  Mail,
+  Globe,
+  HelpCircle
 } from "lucide-react";
 
 // ─── DADOS ──────────────────────────────────────────────────────────
@@ -35,15 +32,6 @@ const CURRENCIES = [
 ];
 const WHATSAPP_NUMBER = "244928669514";
 
-const POPULAR_PAIRS = [
-  { from: "AOA", to: "USD", label: "AOA → USD" },
-  { from: "AOA", to: "EUR", label: "AOA → EUR" },
-  { from: "USD", to: "AOA", label: "USD → AOA" },
-  { from: "EUR", to: "AOA", label: "EUR → AOA" },
-  { from: "AOA", to: "BRL", label: "AOA → BRL" },
-  { from: "USDT", to: "AOA", label: "USDT → AOA" },
-];
-
 // ─── UTILITÁRIOS ────────────────────────────────────────────────────
 const formatCurrency = (value: number) =>
   value.toLocaleString("pt-PT", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -51,9 +39,8 @@ const formatCurrency = (value: number) =>
 const formatRate = (value: number) =>
   value.toLocaleString("pt-PT", { maximumFractionDigits: 5 });
 
-const isValidAngolanPhone = (phone: string): boolean => {
-  const cleaned = phone.replace(/\s/g, "").replace(/^\+?244/, "");
-  return /^9\d{8}$/.test(cleaned);
+const isValidEmail = (email: string): boolean => {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 };
 
 // ─── COMPONENTE: DROPDOWN DE MOEDA ──────────────────────────────────
@@ -117,33 +104,13 @@ const CurrencySelect = ({ value, onChange, label, variant = "light" }: CurrencyS
   );
 };
 
-// ─── COMPONENTE: CHIP DE PAR POPULAR ────────────────────────────────
-interface PopularPairChipProps {
-  pair: { from: string; to: string; label: string };
-  isActive: boolean;
-  onClick: () => void;
-}
-
-const PopularPairChip = ({ pair, isActive, onClick }: PopularPairChipProps) => (
-  <button
-    type="button"
-    onClick={onClick}
-    className={`px-3.5 py-2 rounded-full text-xs font-bold transition-all duration-300 whitespace-nowrap ${
-      isActive 
-        ? "bg-amber-400 text-[#1a4571] shadow-lg scale-105 ring-2 ring-amber-500" 
-        : "bg-white/80 text-slate-600 hover:bg-amber-100 hover:scale-105 border border-amber-200"
-    }`}
-  >
-    {pair.label}
-  </button>
-);
-
 // ─── COMPONENTE PRINCIPAL ───────────────────────────────────────────
 const Buy = () => {
   const navigate = useNavigate();
 
   const [clientName, setClientName] = useState("");
-  const [clientPhone, setClientPhone] = useState("");
+  const [clientEmail, setClientEmail] = useState("");
+  const [clientCountry, setClientCountry] = useState("");
   const [amount, setAmount] = useState<number>(1000);
   const [result, setResult] = useState<number>(0);
   const [currentRate, setCurrentRate] = useState<number>(0);
@@ -158,7 +125,6 @@ const Buy = () => {
   const [rateTrend, setRateTrend] = useState<"up" | "down" | "stable">("stable");
   const [prevRate, setPrevRate] = useState<number>(0);
   const [copiedAmount, setCopiedAmount] = useState(false);
-  const [activePair, setActivePair] = useState<string | null>("AOA → EUR");
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showRateHistory, setShowRateHistory] = useState(false);
   const [inputFocused, setInputFocused] = useState(false);
@@ -235,19 +201,12 @@ const Buy = () => {
     }
   };
 
-  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val = e.target.value.replace(/[^\d+]/g, "");
-    if (val.length > 15) val = val.slice(0, 15);
-    setClientPhone(val);
-  };
-
   const handleSwap = () => {
     setIsFlipped(true);
     setTimeout(() => {
       const temp = fromCurr;
       setFromCurr(toCurr);
       setToCurr(temp);
-      setActivePair(null);
       setIsFlipped(false);
     }, 300);
   };
@@ -256,14 +215,6 @@ const Buy = () => {
     navigator.clipboard.writeText(formatCurrency(result) + " " + toCurr);
     setCopiedAmount(true);
     setTimeout(() => setCopiedAmount(false), 2000);
-  };
-
-  const handleSelectPair = (pair: typeof POPULAR_PAIRS[0]) => {
-    setActivePair(pair.label);
-    setFromCurr(pair.from);
-    setToCurr(pair.to);
-    setShowConfetti(true);
-    setTimeout(() => setShowConfetti(false), 1000);
   };
 
   const handleManualRefresh = () => {
@@ -276,13 +227,13 @@ const Buy = () => {
   const handleFinalizarCompra = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!clientName.trim() || !clientPhone.trim()) {
-      alert("Por favor, insere o teu nome e o teu contacto.");
+    if (!clientName.trim() || !clientCountry.trim()) {
+      alert("Por favor, preencha o seu nome e o país de destino.");
       return;
     }
 
-    if (!isValidAngolanPhone(clientPhone)) {
-      alert("Por favor, insere um número de telefone válido.");
+    if (clientEmail.trim() && !isValidEmail(clientEmail)) {
+      alert("Por favor, insira um endereço de email válido.");
       return;
     }
 
@@ -295,7 +246,8 @@ const Buy = () => {
       `🚀 *SOLICITAÇÃO DE COMPRA DE MOEDA (NEXUS)*\n\n` +
       `👤 *CLIENTE:*\n` +
       `• Nome: ${clientName.trim()}\n` +
-      `• Contacto: ${clientPhone.trim()}\n\n` +
+      `• Email: ${clientEmail.trim() ? clientEmail.trim() : "Não informado"}\n` +
+      `• País de Destino: ${clientCountry.trim()}\n\n` +
       `💵 *DADOS DA OPERAÇÃO:*\n` +
       `• Entrega: ${formatCurrency(amount)} ${fromCurr}\n` +
       `• Recebe Estimado: ${formatCurrency(result)} ${toCurr}\n` +
@@ -364,29 +316,11 @@ const Buy = () => {
               <span>Taxas em tempo real</span>
             </div>
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#1a4571] tracking-tight leading-tight">
-              Comprar divisas e moedas estrangeiras
+              Compre com segurança para mais de 10 moedas
             </h1>
             <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
-              Wise Design aplicado. Compre saldo internacional com taxas estáveis controladas localmente.
+              O valor calculado já contempla o câmbio e todas as taxas do mercado.
             </p>
-          </div>
-
-          {/* PARES POPULARES HORIZONTAIS */}
-          <div className="bg-white rounded-2xl p-4 border-2 border-amber-200 shadow-lg">
-            <div className="flex items-center gap-2 mb-2.5">
-              <TrendingUp size={14} className="text-amber-500" />
-              <span className="text-[11px] font-black uppercase text-slate-500 tracking-wider">Pares Populares</span>
-            </div>
-            <div className="flex flex-row flex-wrap gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
-              {POPULAR_PAIRS.map((pair) => (
-                <PopularPairChip
-                  key={pair.label}
-                  pair={pair}
-                  isActive={activePair === pair.label}
-                  onClick={() => handleSelectPair(pair)}
-                />
-              ))}
-            </div>
           </div>
 
           <form onSubmit={handleFinalizarCompra} id="buy-form" className="bg-white p-5 sm:p-6 rounded-2xl border-2 border-amber-200 shadow-lg space-y-4">
@@ -414,18 +348,36 @@ const Buy = () => {
             </div>
 
             <div className="relative group">
-              <label htmlFor="client-phone" className="sr-only">Contacto telefónico</label>
+              <label htmlFor="client-email" className="sr-only">Endereço de email</label>
               <Input
-                id="client-phone"
-                type="tel"
+                id="client-email"
+                type="email"
                 required
-                placeholder="Contacto telefónico (ex: 9XX XXX XXX)"
-                value={clientPhone}
-                onChange={handlePhoneChange}
-                className="bg-amber-50/50 h-12 sm:h-14 rounded-xl border-2 border-amber-200 focus-visible:ring-4 focus-visible:ring-amber-300 focus-visible:border-amber-400 transition-all duration-300 text-sm sm:text-base font-bold placeholder:font-normal"
+                placeholder="Seu endereço de email"
+                value={clientEmail}
+                onChange={(e) => setClientEmail(e.target.value)}
+                className="bg-amber-50/50 h-12 sm:h-14 rounded-xl border-2 border-amber-200 focus-visible:ring-4 focus-visible:ring-amber-300 focus-visible:border-amber-400 transition-all duration-300 text-sm sm:text-base font-bold placeholder:font-normal pr-10"
               />
-              {isValidAngolanPhone(clientPhone) && (
-                <CheckCircle2 size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-emerald-500" />
+              <Mail size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+              {isValidEmail(clientEmail) && (
+                <CheckCircle2 size={16} className="absolute right-9 top-1/2 -translate-y-1/2 text-emerald-500" />
+              )}
+            </div>
+
+            <div className="relative group">
+              <label htmlFor="client-country" className="sr-only">País de destino</label>
+              <Input
+                id="client-country"
+                type="text"
+                required
+                placeholder="País de destino do saldo"
+                value={clientCountry}
+                onChange={(e) => setClientCountry(e.target.value)}
+                className="bg-amber-50/50 h-12 sm:h-14 rounded-xl border-2 border-amber-200 focus-visible:ring-4 focus-visible:ring-amber-300 focus-visible:border-amber-400 transition-all duration-300 text-sm sm:text-base font-bold placeholder:font-normal pr-10"
+              />
+              <Globe size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+              {clientCountry.trim().length > 2 && (
+                <CheckCircle2 size={16} className="absolute right-9 top-1/2 -translate-y-1/2 text-emerald-500" />
               )}
             </div>
 
@@ -623,13 +575,26 @@ const Buy = () => {
               )}
             </Button>
 
-            {/* ELEMENTOS DE SEGURANÇA */}
-            <div className="flex items-center justify-center gap-3 text-[10px] font-bold text-slate-400 pt-1 flex-wrap">
-              <span className="flex items-center gap-0.5 text-slate-500"><ShieldCheck size={12} className="text-emerald-500" /> SSL Seguro</span>
-              <span className="w-1 h-1 bg-slate-300 rounded-full" />
-              <span className="flex items-center gap-0.5 text-slate-500"><Clock size={12} className="text-amber-500" /> 24h/7d</span>
-              <span className="w-1 h-1 bg-slate-300 rounded-full" />
-              <span className="flex items-center gap-0.5 text-slate-500"><Zap size={12} className="text-amber-500" /> Instantâneo</span>
+            {/* ELEMENTOS DE SEGURANÇA E TEXTOS INSTITUCIONAIS SOLICITADOS */}
+            <div className="flex flex-col items-center justify-center gap-2.5 pt-3 border-t border-amber-100 text-[11px] font-bold text-slate-500 text-center">
+              <div className="flex items-center justify-center gap-1.5 text-amber-600">
+                <HelpCircle size={14} className="shrink-0" />
+                <span>Suporte ao cliente 24 horas por dia.</span>
+              </div>
+              
+              <p className="max-w-md text-slate-400 leading-relaxed font-medium">
+                Tráfego directo via WhatsApp: não realizamos a coleta ou armazenamento de dados pessoais em nosso sistema.
+              </p>
+              
+              <p className="text-[#1a4571] font-extrabold uppercase tracking-wide text-[10px]">
+                Instituição de referência para a movimentação segura dos seus ativos.
+              </p>
+
+              <div className="flex items-center justify-center gap-3 text-[10px] font-bold text-slate-400 pt-1 flex-wrap">
+                <span className="flex items-center gap-0.5 text-slate-400/80"><ShieldCheck size={12} className="text-emerald-500" /> SSL Seguro</span>
+                <span className="w-1 h-1 bg-slate-300 rounded-full" />
+                <span className="flex items-center gap-0.5 text-slate-400/80"><Zap size={12} className="text-amber-500" /> Processamento Instantâneo</span>
+              </div>
             </div>
           </div>
         </div>

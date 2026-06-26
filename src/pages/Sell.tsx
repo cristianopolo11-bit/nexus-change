@@ -20,7 +20,8 @@ import {
   Clock,
   Star,
   AlertCircle,
-  Landmark
+  Landmark,
+  Mail
 } from "lucide-react";
 
 // ─── DADOS ──────────────────────────────────────────────────────────
@@ -28,13 +29,6 @@ const CURRENCIES = [
   "USD", "EUR", "USDT", "USDC", "BRL", "ZAR", "GBP", "AOA"
 ];
 const WHATSAPP_NUMBER = "244928669514";
-
-const POPULAR_PAIRS = [
-  { from: "USD", to: "AOA", label: "USD → AOA" },
-  { from: "EUR", to: "AOA", label: "EUR → AOA" },
-  { from: "USDT", to: "AOA", label: "USDT → AOA" },
-  { from: "BRL", to: "AOA", label: "BRL → AOA" },
-];
 
 // ─── UTILITÁRIOS ────────────────────────────────────────────────────
 const formatCurrency = (value: number) =>
@@ -46,6 +40,10 @@ const formatRate = (value: number) =>
 const isValidAngolanPhone = (phone: string): boolean => {
   const cleaned = phone.replace(/\s/g, "").replace(/^\+?244/, "");
   return /^9\d{8}$/.test(cleaned);
+};
+
+const isValidEmail = (email: string): boolean => {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 };
 
 // ─── COMPONENTE: DROPDOWN DE MOEDA ──────────────────────────────────
@@ -109,32 +107,12 @@ const CurrencySelect = ({ value, onChange, label, variant = "light" }: CurrencyS
   );
 };
 
-// ─── COMPONENTE: CHIP DE PAR POPULAR ────────────────────────────────
-interface PopularPairChipProps {
-  pair: { from: string; to: string; label: string };
-  isActive: boolean;
-  onClick: () => void;
-}
-
-const PopularPairChip = ({ pair, isActive, onClick }: PopularPairChipProps) => (
-  <button
-    type="button"
-    onClick={onClick}
-    className={`px-3.5 py-2 rounded-full text-xs font-bold transition-all duration-300 whitespace-nowrap ${
-      isActive 
-        ? "bg-amber-400 text-[#1a4571] shadow-lg scale-105 ring-2 ring-amber-500" 
-        : "bg-white/80 text-slate-600 hover:bg-amber-100 hover:scale-105 border border-amber-200"
-    }`}
-  >
-    {pair.label}
-  </button>
-);
-
 // ─── COMPONENTE PRINCIPAL ───────────────────────────────────────────
 const Sell = () => {
   const navigate = useNavigate();
 
   const [clientName, setClientName] = useState("");
+  const [clientEmail, setClientEmail] = useState("");
   const [clientPhone, setClientPhone] = useState("");
   const [clientBank, setClientBank] = useState("");
   const [clientIban, setClientIban] = useState("");
@@ -153,7 +131,6 @@ const Sell = () => {
   const [rateTrend, setRateTrend] = useState<"up" | "down" | "stable">("stable");
   const [prevRate, setPrevRate] = useState<number>(0);
   const [copiedAmount, setCopiedAmount] = useState(false);
-  const [activePair, setActivePair] = useState<string | null>("USD → AOA");
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showRateHistory, setShowRateHistory] = useState(false);
   const [inputFocused, setInputFocused] = useState(false);
@@ -243,7 +220,6 @@ const Sell = () => {
       const temp = fromCurr;
       setFromCurr(toCurr);
       setToCurr(temp);
-      setActivePair(null);
       setIsFlipped(false);
     }, 300);
   };
@@ -252,14 +228,6 @@ const Sell = () => {
     navigator.clipboard.writeText(formatCurrency(result) + " " + toCurr);
     setCopiedAmount(true);
     setTimeout(() => setCopiedAmount(false), 2000);
-  };
-
-  const handleSelectPair = (pair: typeof POPULAR_PAIRS[0]) => {
-    setActivePair(pair.label);
-    setFromCurr(pair.from);
-    setToCurr(pair.to);
-    setShowConfetti(true);
-    setTimeout(() => setShowConfetti(false), 1000);
   };
 
   const handleManualRefresh = () => {
@@ -274,6 +242,11 @@ const Sell = () => {
 
     if (!clientName.trim() || !clientPhone.trim()) {
       alert("Por favor, insere o teu nome e o teu contacto.");
+      return;
+    }
+
+    if (clientEmail.trim() && !isValidEmail(clientEmail)) {
+      alert("Por favor, insere um endereço de email válido.");
       return;
     }
 
@@ -298,13 +271,14 @@ const Sell = () => {
       `🚀 *SOLICITAÇÃO DE VENDA DE MOEDA (NEXUS)*\n\n` +
       `👤 *CLIENTE:*\n` +
       `• Nome: ${clientName.trim()}\n` +
+      `• Email: ${clientEmail.trim() ? clientEmail.trim() : "Não informado"}\n` +
       `• Contacto: ${clientPhone.trim()}\n\n` +
       `🏦 *DADOS DE RECEBIMENTO (AOA):*\n` +
       `• Banco: ${clientBank.trim().toUpperCase()}\n` +
       `• IBAN: ${clientIban.trim().toUpperCase()}\n\n` +
       `💵 *DADOS DA OPERAÇÃO:*\n` +
-      `• Tu Entregas: ${formatCurrency(amount)} ${fromCurr}\n` +
-      `• Recebes em Conta (Estimado): ${formatCurrency(result)} ${toCurr}\n` +
+      `• Tu Envias: ${formatCurrency(amount)} ${fromCurr}\n` +
+      `• Tu Recebes (Estimado): ${formatCurrency(result)} ${toCurr}\n` +
       `• Taxa Aplicada: 1 ${fromCurr} = ${formatRate(currentRate)} ${toCurr}`;
 
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
@@ -374,25 +348,8 @@ const Sell = () => {
               Liquide o seu saldo internacional
             </h1>
             <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
-              Venda o seu saldo (USD, EUR, USDT) e receba Kwanzas de forma rápida e segura na sua conta bancária local.
+              Transforme o seu saldo internacional em moeda local. O valor calculado ja contempla o cambio e todas as taxas do mercado.
             </p>
-          </div>
-
-          <div className="bg-white rounded-2xl p-4 border-2 border-amber-200 shadow-lg">
-            <div className="flex items-center gap-2 mb-2.5">
-              <TrendingDown size={14} className="text-amber-500" />
-              <span className="text-[11px] font-black uppercase text-slate-500 tracking-wider">Pares Populares</span>
-            </div>
-            <div className="flex flex-row flex-wrap gap-1.5">
-              {POPULAR_PAIRS.map((pair) => (
-                <PopularPairChip
-                  key={pair.label}
-                  pair={pair}
-                  isActive={activePair === pair.label}
-                  onClick={() => handleSelectPair(pair)}
-                />
-              ))}
-            </div>
           </div>
 
           <form onSubmit={handleFinalizarVenda} id="sell-form" className="bg-white p-5 sm:p-6 rounded-2xl border-2 border-amber-200 shadow-lg space-y-4">
@@ -416,6 +373,23 @@ const Sell = () => {
               />
               {clientName.trim().length > 2 && (
                 <CheckCircle2 size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-emerald-500" />
+              )}
+            </div>
+
+            <div className="relative group">
+              <label htmlFor="client-email" className="sr-only">Endereço de Email</label>
+              <Input
+                id="client-email"
+                type="email"
+                required
+                placeholder="Seu endereço de email"
+                value={clientEmail}
+                onChange={(e) => setClientEmail(e.target.value)}
+                className="bg-amber-50/50 h-12 sm:h-14 rounded-xl border-2 border-amber-200 focus-visible:ring-4 focus-visible:ring-amber-300 focus-visible:border-amber-400 transition-all duration-300 text-sm sm:text-base font-bold placeholder:font-normal pr-10"
+              />
+              <Mail size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+              {isValidEmail(clientEmail) && (
+                <CheckCircle2 size={16} className="absolute right-9 top-1/2 -translate-y-1/2 text-emerald-500" />
               )}
             </div>
 
@@ -517,7 +491,7 @@ const Sell = () => {
               <div className="flex flex-col text-left w-full min-w-0">
                 <label htmlFor="sell-amount" className="text-[11px] font-black text-amber-600 uppercase tracking-wider flex items-center gap-1 truncate">
                   <TrendingDown size={12} />
-                  Tu entregas (Saldo externo)
+                  Tu envias
                 </label>
                 <input
                   id="sell-amount"
@@ -601,7 +575,7 @@ const Sell = () => {
                     <TrendingUp size={11} className="text-[#1a4571]" />
                   </div>
                   <span className="text-[10px] font-black uppercase text-amber-400 tracking-wider truncate">
-                    Tu recebes estimado
+                    Tu recebes
                   </span>
                 </div>
                 
@@ -661,7 +635,7 @@ const Sell = () => {
                 <span className="flex items-center gap-2"><RefreshCw size={16} className="animate-spin" /> PROCESSANDO...</span>
               ) : (
                 <>
-                  <span>Solicitar Venda via WhatsApp</span>
+                  <span>Converter Moeda</span>
                   <Send size={16} />
                 </>
               )}

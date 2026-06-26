@@ -1,6 +1,6 @@
    
  import React, { useState, useEffect, useRef, useCallback } from "react";
- import { Link } from "react-router-dom";
+ import { useNavigate, Link } from "react-router-dom";
  import CurrencySelect from "@/components/CurrencySelect";
  import ConversionResult from "@/components/ConversionResult";
  import { Button } from "@/components/ui/button";
@@ -145,7 +145,7 @@
      {
        url: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=1600&q=80",
        title: "Atendimento Humanizado",
-       description: "Uma equipa dedicada e online pronta para liquidar e validar as suas ordens in minutes.",
+       description: "Uma equipa dedicada e online pronta para liquidar e validar as suas ordens em minutos.",
        icon: <Headphones size={20} />,
      },
    ];
@@ -249,7 +249,7 @@
              index === currentIndex ? "opacity-100 scale-100 z-10" : "opacity-0 scale-110 z-0"
            }`}
            loading="lazy"
-          />
+         />
        ))}
        <div className="absolute inset-0 bg-black/20 z-20 transition-colors group-hover:bg-black/40" />
      </div>
@@ -313,8 +313,8 @@
        </button>
        <div className="overflow-hidden transition-all duration-300 ease-in-out" style={{ maxHeight: height }}>
          <div className="p-5 pt-0">
-           <p ref={contentRef} className="text-sm text-slate-600 font-medium leading-relaxed bg-amber-50/30 rounded-xl p-4 border border-amber-100">
-             {answer}
+           <p className="text-sm text-slate-600 font-medium leading-relaxed bg-amber-50/30 rounded-xl p-4 border border-amber-100">
+             <span ref={contentRef}>{answer}</span>
            </p>
          </div>
        </div>
@@ -373,6 +373,7 @@
  // COMPONENTE PRINCIPAL
  // ═══════════════════════════════════════════════════════════════════════
  const Index = () => {
+   const navigate = useNavigate();
    const [amount, setAmount] = useState<number>(1000);
    const [result, setResult] = useState<number>(0);
    const [currentRate, setCurrentRate] = useState<number>(0);
@@ -450,7 +451,6 @@
            </Link>
  
            <div className="flex items-center gap-3">
-             <Paper />
              <Sheet open={sheetOpen} onOpenChange={(open) => { setSheetOpen(open); if(!open) setMenuLevel("main"); }}>
                <SheetTrigger asChild>
                  <Button variant="ghost" size="icon" className="bg-amber-400 border-2 border-amber-500 hover:bg-amber-300 rounded-xl w-10 h-10 shadow-lg transition-all hover:scale-110">
@@ -594,16 +594,12 @@
        {/* CONTEÚDO PRINCIPAL */}
        <main className="w-full max-w-6xl mx-auto px-4 sm:px-6 -mt-12 space-y-24 pb-20 z-20 relative">
  
-         {/* SIMULADOR */}
+         {/* SIMULADOR LIMPO */}
          <Card className="w-full p-6 md:p-10 border-4 border-amber-400 shadow-[0_25px_60px_-15px_rgba(251,191,36,0.3)] bg-white rounded-[2.5rem] overflow-hidden relative">
            <div className="absolute -top-32 -right-32 w-64 h-64 bg-amber-200 rounded-full opacity-20 blur-3xl" />
            <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-stretch relative z-10">
              <div className="flex-1 space-y-6 text-left">
                <div className="space-y-2">
-                 <div className="inline-flex items-center gap-2 bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider">
-                   <Zap size={12} className="animate-pulse" /> Operação Imediata
-                 </div>
-                 <h2 className="text-3xl font-black text-[#1a4571] tracking-tight">Nexus Premium Banking</h2>
                  <p className="text-slate-500 font-medium text-sm">Câmbio seguro e transparente com liquidação direta.</p>
                </div>
  
@@ -617,7 +613,7 @@
                        step={0.01}
                        value={amount}
                        onChange={(e) => setAmount(Number(e.target.value))}
-                       className="h-16 text-2xl font-black border-2 border-amber-200 focus-border-amber-400 focus-visible:ring-4 focus-visible:ring-amber-200 bg-amber-50/50 rounded-2xl transition-all pl-4 pr-16"
+                       className="h-16 text-2xl font-black border-2 border-amber-200 focus:border-amber-400 focus-visible:ring-4 focus-visible:ring-amber-200 bg-amber-50/50 rounded-2xl transition-all pl-4 pr-16"
                        placeholder="0.00"
                      />
                      <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-black text-amber-500 bg-amber-100 px-2 py-1 rounded-lg">{fromCurr}</span>
