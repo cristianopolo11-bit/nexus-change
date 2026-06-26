@@ -205,7 +205,6 @@ const Transfer = () => {
     } finally {
       setIsLoading(false);
     }
-    }
   }, [amount, fromCurr, toCurr]);
 
   useEffect(() => {
